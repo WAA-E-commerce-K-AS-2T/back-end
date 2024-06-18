@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
@@ -18,6 +19,6 @@ public interface ProductService {
 
     Optional<ProductDTO> getProductById(Long id);
 
-    Page<ProductDTO> filterProducts(Pageable pageable, String category, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String size, String color);
+    Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categories, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String size, String color);
 
 }
