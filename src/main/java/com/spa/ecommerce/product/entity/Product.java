@@ -1,13 +1,12 @@
 package com.spa.ecommerce.product.entity;
 
-import com.spa.ecommerce.common.ProductSizeEnum;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
 import com.spa.ecommerce.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.BatchSize;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +36,8 @@ public class Product {
     private ProductStatusEnum status;
 
     private int inStock;
+
+    private LocalDate postedDate;
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
