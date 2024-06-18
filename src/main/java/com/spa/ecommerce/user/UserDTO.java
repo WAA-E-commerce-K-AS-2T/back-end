@@ -4,6 +4,7 @@ public class UserDTO {
     private Long id;
     private String fullName;
     private String email;
+    private String password;
     private Boolean isActive;
 
     public UserDTO(Long id, String email, String username, String fullName,Boolean isActive) {
@@ -43,5 +44,13 @@ public class UserDTO {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

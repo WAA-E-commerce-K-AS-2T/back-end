@@ -1,0 +1,276 @@
+{
+	"info": {
+		"_postman_id": "635905b0-b5dd-4fa9-9e8c-cccf34e24b46",
+		"name": "WAA Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "6358174"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "register customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"qwerty\",\n    \"fullName\": \"seller\",\n    \"authtype\": \"SELLER\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "register owner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"sainaa@example.com\",\n    \"password\": \"qwerty\",\n    \"fullName\": \"Sainzaya\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"sainaa@example.com\",\n    \"password\": \"qwerty\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/login"
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"sainaa@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/reset-password"
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"qwerty\",\n    \"rePassword\": \"qwerty\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/reset-password/a2687ca6-53ba-4a24-983e-44b6df219837"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "get users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/admin/users"
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/admin/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "New user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"sainaa@example.com\",\n    \"password\": \"qwerty\",\n    \"fullName\": \"sainzaya\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/admin/users"
+					},
+					"response": []
+				},
+				{
+					"name": "edit user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "http://localhost:8080/admin/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8080/admin/users/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "get categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/category"
+					},
+					"response": []
+				},
+				{
+					"name": "get category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/category/1"
+					},
+					"response": []
+				},
+				{
+					"name": "new category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"UFO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/category"
+					},
+					"response": []
+				},
+				{
+					"name": "edit category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"\",\n    \"name\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/category"
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8080/category/"
+					},
+					"response": []
+				},
+				{
+					"name": "get sub-categories",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get sub-category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/category/1/sub-categories"
+					},
+					"response": []
+				},
+				{
+					"name": "New sub-category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8080/category/1/sub-categories"
+					},
+					"response": []
+				},
+				{
+					"name": "edit sub-category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "http://localhost:8080/category/1/sub-categories/2"
+					},
+					"response": []
+				},
+				{
+					"name": "delete subc-ategory",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8080/category/1/sub-categories/2"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
