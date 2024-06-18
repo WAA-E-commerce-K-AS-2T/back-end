@@ -1,16 +1,15 @@
 package com.spa.ecommerce.product.dto;
 
-import com.spa.ecommerce.common.ProductSizeEnum;
-import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.productPhoto.dto.ProductPhotoDTO;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class ProductDTO {
     private long id;
-    private String category;
+    private List<Long> categoryIds = new ArrayList<>();
     private String name;
     private String description;
     private double price;
