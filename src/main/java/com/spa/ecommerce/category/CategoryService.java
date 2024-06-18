@@ -2,11 +2,20 @@ package com.spa.ecommerce.category;
 
 import com.spa.ecommerce.common.GeneralService;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface CategoryService extends GeneralService<CategoryDTO, Long> {
+public interface CategoryService {
 
-    Optional<CategoryDTO> saveSub(Long id, CategoryDTO category);
+    List<CategoryDTO> getAllCategories();
 
-    Optional<CategoryDTO> updateSub(Long id, Long subId, CategoryDTO category);
+    Optional<CategoryDTO> getCategoryById(Long id);
+
+    Optional<CategoryDTO> createCategory(CategoryDTO categoryDTO);
+
+    Optional<CategoryDTO> updateCategory(Long id, CategoryDTO categoryDTO);
+
+    Optional<CategoryDTO> deleteCategory(Long id);
+
+    Optional<CategoryDTO> addSubCategory(Long id, CategoryDTO categoryDTO);
 }
