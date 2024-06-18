@@ -10,4 +10,5 @@ public class Constant {
     public static final String ADMIN_PTIVILEGE_URL_PREFIX = API_URL_v1_PREFIX + "/admin/privileges";
 
 
+    public static final String SHOPPINGCART_URL_PREFIX = API_URL_v1_PREFIX + "/cart";
 }
