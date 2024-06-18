@@ -8,6 +8,7 @@ import java.util.Collection;
 
 @Entity
 @Data
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +21,8 @@ public class User {
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+//    @Column(nullable = false)
+//    private String password;
 
     @Column(name = "enabled")
     private Boolean enabled;
