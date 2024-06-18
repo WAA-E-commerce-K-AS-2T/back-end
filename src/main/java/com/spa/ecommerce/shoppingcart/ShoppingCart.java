@@ -1,5 +1,6 @@
 package com.spa.ecommerce.shoppingcart;
 
+import com.spa.ecommerce.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 
