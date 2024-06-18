@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.Collection;
 
+@Entity
 @Data
 public class Buyer extends User{
 
