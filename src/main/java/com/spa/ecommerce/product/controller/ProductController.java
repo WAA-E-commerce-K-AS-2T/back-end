@@ -39,4 +39,17 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<ProductDTO>> filterProduct(@RequestParam(name = "category", required = false) String category,
+                                                          @RequestParam(name = "minPrice", required = false) Double minPrice,
+                                                          @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+                                                          @RequestParam(name = "brand", required = false) String brand,
+                                                          @RequestParam(name = "newArrival", required = false) Boolean newArrival,
+                                                          @RequestParam(name = "color", required = false) String color,
+                                                          @RequestParam(name = "material", required = false) String material,
+                                                          Pageable pageable
+                                                          ){
+        return new ResponseEntity<>(productService.filterProducts(pageable, category, minPrice, maxPrice, brand, newArrival, color, material), HttpStatus.OK);
+    }
 }

@@ -3,7 +3,9 @@ package com.spa.ecommerce.product.service;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductDTOMapper;
+import com.spa.ecommerce.product.dto.ProductSearchRequest;
 import com.spa.ecommerce.product.entity.Product;
+import com.spa.ecommerce.product.repository.CustomProductRepository;
 import com.spa.ecommerce.product.repository.ProductRepository;
 import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
 import com.spa.ecommerce.productPhoto.repository.ProductPhotoRepository;
@@ -19,6 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDTOMapper productDTOMapper;
     private final CloudinaryServiceImpl cloudinaryService;
     private final ProductPhotoRepository productPhotoRepository;
+    private final CustomProductRepository customProductRepository;
 
     @Override
     public Optional<ProductDTO> saveProduct(Long sellerId, ProductDTO productDTO, MultipartFile[] photos) {
@@ -42,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
             BeanUtils.copyProperties(productDTO, product);
             product.setStatus(ProductStatusEnum.IN_REVIEW);
             product.setSeller(user);
+            product.setPostedDate(LocalDate.now());
 
             for(MultipartFile photo: photos){
                 try {
@@ -143,5 +150,18 @@ public class ProductServiceImpl implements ProductService {
         }else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Page<ProductDTO> filterProducts(Pageable pageable, String category, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material) {
+        ProductSearchRequest searchRequest = new ProductSearchRequest();
+        searchRequest.setCategory(category);
+        searchRequest.setMinPrice(minPrice);
+        searchRequest.setMaxPrice(maxPrice);
+        searchRequest.setBrand(brand);
+        searchRequest.setNewArrival(newArrival);
+        searchRequest.setColor(color);
+        searchRequest.setMaterial(material);
+        return customProductRepository.searchProduct(searchRequest, pageable).map(productDTOMapper);
     }
 }

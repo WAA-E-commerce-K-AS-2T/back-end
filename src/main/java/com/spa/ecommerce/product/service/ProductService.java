@@ -1,12 +1,10 @@
 package com.spa.ecommerce.product.service;
 
-import com.spa.ecommerce.common.GeneralService;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
@@ -19,5 +17,7 @@ public interface ProductService {
     Optional<ProductDTO> updateProduct(Long id, ProductDTO productDTO, MultipartFile[] photos);
 
     Optional<ProductDTO> getProductById(Long id);
+
+    Page<ProductDTO> filterProducts(Pageable pageable, String category, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String size, String color);
 
 }
