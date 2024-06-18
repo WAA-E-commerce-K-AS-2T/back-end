@@ -1,14 +1,15 @@
 package com.spa.ecommerce.user;
 
+import com.spa.ecommerce.product.entity.Product;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
-import java.util.Collection;
+import java.util.List;
 
-@Entity
 @Data
 public class Seller extends User{
-//    @OneToMany(mappedBy = "owner")
-//    private Collection<Products> properties;
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
+    private List<Product> products;
 }
