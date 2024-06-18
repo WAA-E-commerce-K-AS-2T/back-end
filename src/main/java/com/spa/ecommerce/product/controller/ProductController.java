@@ -3,6 +3,8 @@ package com.spa.ecommerce.product.controller;
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.service.ProductService;
+import com.spa.ecommerce.review.ReviewDTO;
+import com.spa.ecommerce.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,4 +52,11 @@ public class ProductController {
                                                           ){
         return new ResponseEntity<>(productService.filterProducts(pageable, categories, minPrice, maxPrice, brand, newArrival, color, material), HttpStatus.OK);
     }
+
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<List<ReviewDTO>> getReviewsByProductID(@PathVariable("productId") Long id) {
+        List<ReviewDTO> reviews = productService.getReviewsByProductID(id);
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
 }

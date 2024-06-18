@@ -67,5 +67,4 @@ INSERT INTO category (name, category_parent) VALUES ('Laptops', 12); -- id = 14
 INSERT INTO category (name, category_parent) VALUES ('Desktops', 12); -- id = 15
 
 --REVIEW
-Insert into
 

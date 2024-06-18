@@ -3,6 +3,7 @@ package com.spa.ecommerce.product.entity;
 import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
+import com.spa.ecommerce.review.Review;
 import com.spa.ecommerce.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -52,6 +53,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductPhoto> productPhotos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Review> reviews;
 
     public void addProductPhoto(ProductPhoto productPhoto){
         this.productPhotos.add(productPhoto);
