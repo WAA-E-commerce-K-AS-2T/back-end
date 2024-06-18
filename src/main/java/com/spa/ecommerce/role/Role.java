@@ -1,5 +1,6 @@
 package com.spa.ecommerce.role;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.spa.ecommerce.privilege.Privilege;
 import com.spa.ecommerce.user.User;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ public class Role {
     private Long id;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private Collection<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER)

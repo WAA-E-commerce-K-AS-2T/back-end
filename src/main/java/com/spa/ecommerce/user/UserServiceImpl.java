@@ -1,6 +1,7 @@
 package com.spa.ecommerce.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -12,6 +13,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDTOMapper userDTOMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +33,9 @@ public class UserServiceImpl implements UserService {
     public Optional<UserDTO> save(UserDTO user) {
         User newUser = new User();
         newUser.setFullName(user.getFullName());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setEmail(user.getEmail());
+        newUser.setEnabled(user.getIsActive());
         userRepository.save(newUser);
 
         return Optional.of(userDTOMapper.apply(newUser));
@@ -41,6 +47,8 @@ public class UserServiceImpl implements UserService {
             User existingUser = existingUserOpt.get();
             existingUser.setFullName(updatedUser.getFullName());
             existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            existingUser.setEnabled(updatedUser.getIsActive());
             userRepository.save(existingUser);
 
             return Optional.of(userDTOMapper.apply(existingUser));

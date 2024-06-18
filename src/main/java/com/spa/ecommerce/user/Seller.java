@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.util.List;
 
+@Entity
 @Data
 public class Seller extends User{
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)

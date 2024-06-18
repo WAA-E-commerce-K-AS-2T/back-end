@@ -9,10 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(Constant.PRODUCT_URL_PREFIX)
@@ -41,7 +39,7 @@ public class ProductController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<ProductDTO>> filterProduct(@RequestParam(name = "category", required = false) String category,
+    public ResponseEntity<Page<ProductDTO>> filterProduct(@RequestParam(name = "categories", required = false) List<Long> categories,
                                                           @RequestParam(name = "minPrice", required = false) Double minPrice,
                                                           @RequestParam(name = "maxPrice", required = false) Double maxPrice,
                                                           @RequestParam(name = "brand", required = false) String brand,
@@ -50,6 +48,6 @@ public class ProductController {
                                                           @RequestParam(name = "material", required = false) String material,
                                                           Pageable pageable
                                                           ){
-        return new ResponseEntity<>(productService.filterProducts(pageable, category, minPrice, maxPrice, brand, newArrival, color, material), HttpStatus.OK);
+        return new ResponseEntity<>(productService.filterProducts(pageable, categories, minPrice, maxPrice, brand, newArrival, color, material), HttpStatus.OK);
     }
 }

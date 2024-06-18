@@ -1,5 +1,7 @@
 package com.spa.ecommerce.product.service;
 
+import com.spa.ecommerce.category.Category;
+import com.spa.ecommerce.category.CategoryRepo;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductDTOMapper;
@@ -22,8 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final CloudinaryServiceImpl cloudinaryService;
     private final ProductPhotoRepository productPhotoRepository;
     private final CustomProductRepository customProductRepository;
+    private final CategoryRepo categoryRepo;
 
     @Override
     public Optional<ProductDTO> saveProduct(Long sellerId, ProductDTO productDTO, MultipartFile[] photos) {
@@ -45,9 +47,20 @@ public class ProductServiceImpl implements ProductService {
         if(OptUser.isPresent()){
             User user = OptUser.get();
             Product product = new Product();
+            List<Category> productCategories = new ArrayList<Category>();
+            List<Long> catIds = productDTO.getCategoryIds();
+            for(Long catId : catIds){
+                Optional<Category> cat = categoryRepo.findById(catId);
+                if(cat.isPresent()){
+                    Category category = cat.get();
+                    productCategories.add(category);
+                }
+            }
             BeanUtils.copyProperties(productDTO, product);
             product.setStatus(ProductStatusEnum.IN_REVIEW);
             product.setSeller(user);
+            product.setCategories(productCategories);
+
             product.setPostedDate(LocalDate.now());
 
             for(MultipartFile photo: photos){
@@ -122,9 +135,18 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
 
+            List<Category> cats = existingProduct.getCategories();
+            for(Long catId : productDTO.getCategoryIds()){
+                Optional<Category> cat = categoryRepo.findById(catId);
+                if(cat.isPresent()){
+                    Category category = cat.get();
+                    cats.add(category);
+                }
+            }
+
+
             ProductStatusEnum status = existingProduct.getStatus();
             List<ProductPhoto> productPhoto = existingProduct.getProductPhotos();
-            existingProduct.setCategory(productDTO.getCategory());
             existingProduct.setName(productDTO.getName());
             existingProduct.setDescription(productDTO.getDescription());
             existingProduct.setPrice(productDTO.getPrice());
@@ -153,9 +175,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> filterProducts(Pageable pageable, String category, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material) {
+    public Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material) {
         ProductSearchRequest searchRequest = new ProductSearchRequest();
-        searchRequest.setCategory(category);
+        List<Category> cats  = new ArrayList<Category>();
+        for(Long categoryId : categoryIds){
+            Optional<Category> catOptional = categoryRepo.findById(categoryId);
+            if(catOptional.isPresent()){
+                Category category = catOptional.get();
+                cats.add(category);
+            }
+        }
+        searchRequest.setCategories(cats);
         searchRequest.setMinPrice(minPrice);
         searchRequest.setMaxPrice(maxPrice);
         searchRequest.setBrand(brand);

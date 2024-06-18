@@ -1,5 +1,6 @@
 package com.spa.ecommerce.product.entity;
 
+import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
 import com.spa.ecommerce.user.User;
@@ -16,8 +17,14 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //category
-    private String category;
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
 
     private String name;
 
