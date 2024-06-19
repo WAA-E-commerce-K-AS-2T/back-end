@@ -64,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
             }
             BeanUtils.copyProperties(productDTO, product);
             product.setStatus(ProductStatusEnum.IN_REVIEW);
+            product.setTimesBought(0);
             product.setSeller(user);
             product.setCategories(productCategories);
 
@@ -135,6 +136,7 @@ public class ProductServiceImpl implements ProductService {
                     productPhoto.setImageUrl((String) clodinaryResult.get("url"));
                     productPhoto.setImageId((String) clodinaryResult.get("public_id"));
                     productPhoto.setProduct(existingProduct);
+                    existingProduct.setTimesBought(existingProduct.getTimesBought());
                     existingProduct.addProductPhoto(productPhoto);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
