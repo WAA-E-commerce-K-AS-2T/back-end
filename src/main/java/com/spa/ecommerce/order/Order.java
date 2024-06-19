@@ -1,9 +1,12 @@
 package com.spa.ecommerce.order;
 
+import com.spa.ecommerce.common.Auditable;
 import com.spa.ecommerce.orderitem.OrderItem;
+import com.spa.ecommerce.shoppingcart.ShoppingCart;
 import com.spa.ecommerce.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,18 +14,15 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "orders")
-public class Order {
+public class Order extends Auditable<User> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
-    @ManyToOne
-    private User buyer;
+    private Long id;
     private Status  status;
-    private double amount;
-    private LocalDate date;
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = ShoppingCart.class)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private List<ShoppingCart> cartItems;
 
 //    @ManyToOne
 //    private Address shippingAddress;
@@ -30,13 +30,4 @@ public class Order {
 //    @ManyToOne
 //    private Address billingAddress;
 
-    public Order(){}
-
-    public Order(User buyer, Status status, double amount, LocalDate date, List<OrderItem> orderItems) {
-        this.buyer = buyer;
-        this.status = status;
-        this.amount = amount;
-        this.date = date;
-        this.orderItems = orderItems;
-    }
 }

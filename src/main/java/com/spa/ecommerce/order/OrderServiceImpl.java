@@ -2,10 +2,15 @@ package com.spa.ecommerce.order;
 
 import com.spa.ecommerce.order.dto.OrderDTO;
 import com.spa.ecommerce.order.dto.OrderDTOMapper;
+import com.spa.ecommerce.product.entity.Product;
+import com.spa.ecommerce.shoppingcart.ShoppingCart;
+import com.spa.ecommerce.shoppingcart.ShoppingCartDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,36 +23,44 @@ public class OrderServiceImpl implements OrderService {
     private OrderDTOMapper orderDTOMapper;
 
     @Override
-    public OrderDTO save(Order order) {
-        Order savedOrder = orderRepository.save(order);
-        return orderDTOMapper.apply(savedOrder);
+    public Collection<OrderDTO> getAll() {
+        return orderRepository.findAll().stream().map(orderDTOMapper).collect(Collectors.toList());
     }
 
     @Override
-    public OrderDTO findById(int id) {
-        return orderRepository.findById(id)
-                .map(orderDTOMapper)
-                .orElse(null);
+    public Optional<OrderDTO> get(Long id) {
+        return orderRepository.findById(id).map(orderDTOMapper);
     }
 
     @Override
-    public void update(int id, Order order) {
-        Order existingOrder = orderRepository.findById(id).orElse(null);
-        if (existingOrder != null) {
-            orderRepository.save(order);
+    public Optional<OrderDTO> save(OrderDTO entity) {
+        Order order = new Order();
+        order.setStatus(entity.getStatus());
+        order = orderRepository.save(order);
+        return Optional.of(orderDTOMapper.apply(order));
+    }
+
+    @Override
+    public Optional<OrderDTO> update(Long id, OrderDTO entity) {
+        Optional<Order> existingOrderOpt = orderRepository.findById(id);
+        if (existingOrderOpt.isPresent()) {
+            Order existingOrder = existingOrderOpt.get();
+            existingOrder.setStatus(entity.getStatus());
+            orderRepository.save(existingOrder);
+            return Optional.of(orderDTOMapper.apply(existingOrder));
+        } else {
+            return Optional.empty();
         }
     }
 
     @Override
-    public void delete(int id) {
-        orderRepository.deleteById(id);
-    }
-
-    @Override
-    public List<OrderDTO> findAll() {
-        return orderRepository.findAll()
-                .stream()
-                .map(orderDTOMapper)
-                .collect(Collectors.toList());
+    public Optional<OrderDTO> delete(Long id, OrderDTO entity) {
+        Optional<Order> existingOrderOpt = orderRepository.findById(id);
+        if (existingOrderOpt.isPresent()) {
+            orderRepository.deleteById(id);
+            return Optional.of(orderDTOMapper.apply(existingOrderOpt.get()));
+        } else {
+            return Optional.empty();
+        }
     }
 }

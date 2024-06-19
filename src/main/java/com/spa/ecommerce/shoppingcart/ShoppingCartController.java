@@ -1,48 +1,51 @@
 package com.spa.ecommerce.shoppingcart;
 
-import com.spa.ecommerce.shoppingcart.CartItem.dto.CartItemDTO;
-import com.spa.ecommerce.shoppingcart.dto.ShoppingCartDTO;
+import com.spa.ecommerce.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/cart")
+@RequestMapping(Constant.SHOPPINGCART_URL_PREFIX)
 public class ShoppingCartController {
 
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    @PostMapping("/cartItems")
-    public ResponseEntity<ShoppingCartDTO> addItemToCart(Principal principal, @RequestBody CartItemDTO cartItemDTO) {
-        ShoppingCartDTO shoppingCartDTO = shoppingCartService.addItemToCart(principal, cartItemDTO);
-        return new ResponseEntity<>(shoppingCartDTO, HttpStatus.OK);
+    @GetMapping()
+    public ResponseEntity<Collection<ShoppingCartDTO>> index(){
+        return new ResponseEntity<>(shoppingCartService.getAll(), HttpStatus.OK);
     }
 
-    @DeleteMapping("cartItems/product/{productId}")
-    public ResponseEntity<ShoppingCartDTO> removeItemFromCart(Principal principal, @PathVariable Long productId) {
-        ShoppingCartDTO cart = shoppingCartService.removeItemFromCart(principal, productId);
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+    @GetMapping("/{id}")
+    public  ResponseEntity<ShoppingCartDTO> get(@PathVariable("id") Long id) {
+        return shoppingCartService.get(id).map(ResponseEntity::ok).orElseGet(()->ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @DeleteMapping("cartItems/{cartItemId}")
-    public ResponseEntity<ShoppingCartDTO> removeWholeCartItem(
-            @PathVariable Long cartItemId,
-            Principal principal) {
-        ShoppingCartDTO cart = shoppingCartService.removeWholeCartItem(principal, cartItemId);
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<ShoppingCartDTO> save(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+        Optional<ShoppingCartDTO> savedUser = shoppingCartService.save(shoppingCartDTO);
+        return savedUser.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @DeleteMapping("/clear")
-    public ResponseEntity<ShoppingCartDTO> clearCart(Principal principal) {
-        ShoppingCartDTO cart = shoppingCartService.clearCart(principal);
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<ShoppingCartDTO> update(@PathVariable Long id, @RequestBody ShoppingCartDTO shoppingCartDTO) {
+        Optional<ShoppingCartDTO> updatedUserOpt = shoppingCartService.update(id, shoppingCartDTO);
+        return updatedUserOpt
+                .map(userDTO -> new ResponseEntity<>(userDTO, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ShoppingCartDTO> delete(@PathVariable Long id, @RequestBody ShoppingCartDTO shoppingCartDTO) {
+        Optional<ShoppingCartDTO> updatedUserOpt = shoppingCartService.delete(id, shoppingCartDTO);
+        return updatedUserOpt
+                .map(userDTO -> new ResponseEntity<>(userDTO, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
-
-
-

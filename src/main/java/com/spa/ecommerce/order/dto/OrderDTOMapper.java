@@ -11,9 +11,8 @@ public class OrderDTOMapper implements Function<Order, OrderDTO> {
     @Override
     public OrderDTO apply(Order order) {
         return new OrderDTO(
-                order.getOrderId(),
-                order.getStatus(),
-                order.getAmount()
+                order.getId(),
+                order.getStatus()
         );
     }
 
