@@ -37,9 +37,9 @@ VALUES ('users.read'),
        ('review.read'),
        ('review.write'),
        ('review.delete'),
-       ('shoppingcard.read'),
-       ('shoppingcard.write'),
-       ('shoppingcard.delete'),
+       ('shoppingcart.read'),
+       ('shoppingcart.write'),
+       ('shoppingcart.delete'),
        ('none.');
 
 INSERT INTO roles_privileges (privilege_id, role_id)
@@ -88,7 +88,7 @@ INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_
 INSERT INTO seller (id) VALUES (3);
 INSERT INTO buyer (id) VALUES (2);
 
-INSERT INTO productdb.users_roles (id, role_id, user_id) VALUES (1, 1, 1);
-INSERT INTO productdb.users_roles (id, role_id, user_id) VALUES (2, 4, 2);
-INSERT INTO productdb.users_roles (id, role_id, user_id) VALUES (3, 3, 3);
+INSERT INTO users_roles (id, role_id, user_id) VALUES (1, 1, 1);
+INSERT INTO users_roles (id, role_id, user_id) VALUES (2, 4, 2);
+INSERT INTO users_roles (id, role_id, user_id) VALUES (3, 3, 3);
 

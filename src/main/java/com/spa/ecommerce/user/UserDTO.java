@@ -1,17 +1,23 @@
 package com.spa.ecommerce.user;
 
+import com.spa.ecommerce.role.RoleDTO;
+
+import java.util.Collection;
+
 public class UserDTO {
     private Long id;
     private String fullName;
     private String email;
     private String password;
     private Boolean isActive;
+    private Collection<RoleDTO> roles;
 
-    public UserDTO(Long id, String email, String username, String fullName,Boolean isActive) {
+    public UserDTO(Long id, String email, String username, String fullName, Boolean isActive, Collection<RoleDTO> roles) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.isActive = isActive;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -52,5 +58,13 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Collection<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<RoleDTO> roles) {
+        this.roles = roles;
     }
 }

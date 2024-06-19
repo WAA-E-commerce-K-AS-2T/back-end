@@ -11,6 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -47,19 +53,30 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("product.read")
                         .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX )
                         .hasAnyAuthority("product.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/**" )
+                        .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("product.write")
-                        .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/**" )
+                        .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("product.delete")
 
+                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX+ "/*/reviews" )
+                        .hasAnyAuthority("review.read")
+                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX+ "/*/reviews/*" )
+                        .hasAnyAuthority("review.read")
+                        .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX+ "/*/reviews" )
+                        .hasAnyAuthority("review.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/*/reviews/*" )
+                        .hasAnyAuthority("review.write")
+                        .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/*/reviews/*" )
+                        .hasAnyAuthority("review.delete")
+
                         .requestMatchers(HttpMethod.GET, Constant.SHOPPINGCART_URL_PREFIX )
-                        .hasAnyAuthority("product.read")
+                        .hasAnyAuthority("shoppingcart.read")
                         .requestMatchers(HttpMethod.POST, Constant.SHOPPINGCART_URL_PREFIX )
-                        .hasAnyAuthority("product.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.SHOPPINGCART_URL_PREFIX+ "/**" )
-                        .hasAnyAuthority("product.write")
-                        .requestMatchers(HttpMethod.DELETE, Constant.SHOPPINGCART_URL_PREFIX+ "/**" )
-                        .hasAnyAuthority("product.delete")
+                        .hasAnyAuthority("shoppingcart.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.SHOPPINGCART_URL_PREFIX+ "/*" )
+                        .hasAnyAuthority("shoppingcart.write")
+                        .requestMatchers(HttpMethod.DELETE, Constant.SHOPPINGCART_URL_PREFIX+ "/*" )
+                        .hasAnyAuthority("shoppingcart.delete")
 
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_USER_URL_PREFIX )
                         .hasAnyAuthority("users.read")
@@ -67,27 +84,27 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("users.write")
                         .requestMatchers(HttpMethod.PUT, Constant.ADMIN_USER_URL_PREFIX )
                         .hasAnyAuthority("users.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.ADMIN_USER_URL_PREFIX +"/**" )
+                        .requestMatchers(HttpMethod.PUT, Constant.ADMIN_USER_URL_PREFIX +"/*" )
                         .hasAnyAuthority("users.write")
-                        .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_USER_URL_PREFIX +"/**" )
+                        .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_USER_URL_PREFIX +"/*" )
                         .hasAnyAuthority("users.delete")
 
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_ROLE_URL_PREFIX )
                         .hasAnyAuthority("roles.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_ROLE_URL_PREFIX )
                         .hasAnyAuthority("roles.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.ADMIN_ROLE_URL_PREFIX+"/**" )
+                        .requestMatchers(HttpMethod.PUT, Constant.ADMIN_ROLE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("roles.write")
-                        .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_ROLE_URL_PREFIX+"/**" )
+                        .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_ROLE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("roles.delete")
 
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_PTIVILEGE_URL_PREFIX )
                         .hasAnyAuthority("privileges.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_PTIVILEGE_URL_PREFIX )
                         .hasAnyAuthority("privileges.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/**" )
+                        .requestMatchers(HttpMethod.PUT, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("privileges.write")
-                        .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/**" )
+                        .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("privileges.delete")
 
                         .anyRequest().authenticated())

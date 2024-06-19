@@ -3,6 +3,7 @@
 /.project
 /.settings/
 /target/
+/src/main/resources/application.properties
 
 # IntelliJ IDEA specific files
 /.idea/

@@ -2,14 +2,14 @@ package com.spa.ecommerce.shoppingcart;
 
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.ProductRepository;
-import com.spa.ecommerce.shoppingCartItem.CartItem;
-import com.spa.ecommerce.shoppingCartItem.CartItemRepository;
-import com.spa.ecommerce.shoppingCartItem.dto.CartItemDTO;
-import com.spa.ecommerce.shoppingCartItem.dto.CartItemDTOMapper;
+import com.spa.ecommerce.shoppingcart.CartItem.dto.CartItemDTO;
+import com.spa.ecommerce.shoppingcart.CartItem.entity.CartItem;
+import com.spa.ecommerce.shoppingcart.CartItem.repository.CartItemRepository;
 import com.spa.ecommerce.shoppingcart.dto.ShoppingCartDTO;
 import com.spa.ecommerce.shoppingcart.dto.ShoppingCartDTOMapper;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private ShoppingCartRepository shoppingCartRepository;
 
     @Autowired
-    private CartItemRepository cartItemRepository;
+    private ShoppingCartDTOMapper shoppingCartDTOMapper;
 
     @Autowired
     private ProductRepository productRepository;
@@ -34,152 +34,161 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private UserRepository userRepository;
 
     @Autowired
-    private CartItemDTOMapper cartItemDTOMapper;
+    private CartItemRepository cartItemRepository;
 
-    @Autowired
-    private ShoppingCartDTOMapper shoppingCartDTOMapper;
+    @Transactional
+    public ShoppingCartDTO addItemToCart(Principal principal, CartItemDTO cartItemDTO) {
+        String email = principal.getName();
 
-    @Override
-    public List<ShoppingCartDTO> findAll() {
-        return shoppingCartRepository.findAll()
-                .stream()
-                .map(shoppingCartDTOMapper)
-                .collect(Collectors.toList());
-    }
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            // Get user cart
+            User user = userOptional.get();
+            Long userId = user.getId();
+            ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId);
+            if (cart == null) {
+                cart = new ShoppingCart();
+                cart.setBuyer(user);
+                shoppingCartRepository.save(cart);
+            }
 
-    @Override
-    public ShoppingCartDTO save(ShoppingCart shoppingCart) {
-        ShoppingCart savedCart = shoppingCartRepository.save(shoppingCart);
-        return shoppingCartDTOMapper.apply(savedCart);
-    }
+            Long productId = cartItemDTO.getProductId();
+            Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
 
-    @Override
-    public ShoppingCartDTO findById(int id) {
-        return shoppingCartRepository.findById( id)
-                .map(shoppingCartDTOMapper)
-                .orElse(null);
-    }
+            // Check if the product already exists in the cart
+            CartItem existingCartItem = cart.getCartItems().stream()
+                    .filter(item -> item.getProduct().getId().equals(productId))
+                    .findFirst()
+                    .orElse(null);
 
-    @Override
-    public void update(int cartId, ShoppingCart shoppingCart) {
-        if (shoppingCartRepository.existsById( cartId)) {
-            shoppingCart.setCartId( cartId);
-            shoppingCartRepository.save(shoppingCart);
-        }
-    }
+            if (existingCartItem != null) {
+                // Update quantity and price if the item already exists
+                existingCartItem.setQuantity(existingCartItem.getQuantity() + cartItemDTO.getQuantity());
+                existingCartItem.setPrice(existingCartItem.getQuantity() * product.getPrice());
+            } else {
+                // Add new item to the cart
+                CartItem cartItem = new CartItem();
+                cartItem.setCart(cart);
+                cartItem.setProduct(product);
+                cartItem.setQuantity(cartItemDTO.getQuantity());
+                cartItem.setPrice(cartItemDTO.getQuantity() * product.getPrice());
+                cart.getCartItems().add(cartItem);
+            }
 
-    @Override
-    public void delete(int cartId) {
-        shoppingCartRepository.deleteById( cartId);
-    }
+            // Update the cart's total price
+            double totalPrice = cart.getCartItems().stream().mapToDouble(CartItem::getPrice).sum();
+            cart.setTotalPrice(totalPrice);
 
+            // Save the updated cart
+            ShoppingCart shoppingCart = shoppingCartRepository.save(cart);
 
+            // Ensure the cart items are saved (though cascade should handle this)
+            for (CartItem item : cart.getCartItems()) {
+                cartItemRepository.save(item);
+            }
 
-//
-//    public ShoppingCartDTO getCartByUserId(Long userId) {
-//        ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId)
-//                .orElseThrow(() -> new RuntimeException("Shopping cart not found for user id: " + userId));
-//        return shoppingCartDTOMapper.apply(cart);
-//    }
-
-    public CartItemDTO addCartItem(Principal principal, CartItemDTO cartItemDTO) {
-        // Retrieve the user from the Principal
-        Optional<User> userOptional = userRepository.findByEmail(principal.getName());
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
-
-        User user = userOptional.get();
-        Long userId = user.getId();
-
-        // Retrieve the shopping cart for the user
-        ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found for user id: " + userId));
-
-        // Retrieve the product from the database
-        Product product = productRepository.findById(cartItemDTO.getProductDTO().getId())
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + cartItemDTO.getProductDTO().getId()));
-
-        // Create a new CartItem
-        CartItem cartItem = new CartItem();
-        cartItem.setQuantity(cartItemDTO.getQuantity());
-        cartItem.setProduct(product);
-        cartItem.setCart(cart);
-
-        // Save the CartItem to the database
-        cartItem = cartItemRepository.save(cartItem);
-
-        // Add the CartItem to the shopping cart
-        cart.getItems().add(cartItem);
-        shoppingCartRepository.save(cart);
-
-        // Return the saved CartItem as a DTO
-        return cartItemDTOMapper.apply(cartItem);
-    }
-
-    public CartItemDTO updateCartItem(Principal principal, int cartItemId, CartItemDTO cartItemDTO) {
-        Optional<User> userOptional = userRepository.findByEmail(principal.getName());
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
+            return shoppingCartDTOMapper.apply(shoppingCart);
         }
 
-        User user = userOptional.get();
-        Long userId = user.getId();
-
-        ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found for user id: " + userId));
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("CartItem not found with id: " + cartItemId));
-
-        // Retrieve the product from the database
-        Product product = productRepository.findById(cartItemDTO.getProductDTO().getId())
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + cartItemDTO.getProductDTO().getId()));
-
-
-        cartItem.setQuantity(cartItemDTO.getQuantity());
-        cartItem.setProduct(product);
-
-        cartItem = cartItemRepository.save(cartItem);
-        return cartItemDTOMapper.apply(cartItem);
+        return null;
     }
 
-    public void removeCartItem(Principal principal, int cartItemId) {
-        Optional<User> userOptional = userRepository.findByEmail(principal.getName());
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
+    @Transactional
+    public ShoppingCartDTO removeItemFromCart(Principal principal, Long productId) {
+        String email = principal.getName();
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            // Get user cart
+            User user = userOptional.get();
+            Long userId = user.getId();
+            ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId);
+            if (cart != null) {
+                // Find the cart item by product ID
+                CartItem cartItem = cart.getCartItems().stream()
+                        .filter(item -> item.getProduct().getId().equals(productId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (cartItem != null) {
+                    if (cartItem.getQuantity() > 1) {
+                        // Reduce quantity by 1 if multiple quantities
+                        cartItem.setQuantity(cartItem.getQuantity() - 1);
+                        cartItem.setPrice(cartItem.getQuantity() * cartItem.getProduct().getPrice());
+                        cartItemRepository.save(cartItem);
+                    } else {
+                        // Remove the item from the cart if quantity is 1
+                        cart.getCartItems().remove(cartItem);
+                        cartItemRepository.delete(cartItem);
+                    }
+
+                    // Update the cart's total price
+                    double totalPrice = cart.getCartItems().stream().mapToDouble(CartItem::getPrice).sum();
+                    cart.setTotalPrice(totalPrice);
+
+                    // Save the updated cart
+                    ShoppingCart shoppingCart = shoppingCartRepository.save(cart);
+                    return shoppingCartDTOMapper.apply(shoppingCart);
+                }
+            }
         }
 
-        User user = userOptional.get();
-        Long userId = user.getId();
-
-        ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found for user id: " + userId));
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("CartItem not found with id: " + cartItemId));
-
-        cart.getItems().remove(cartItem);
-        cartItemRepository.delete(cartItem);
-        shoppingCartRepository.save(cart);
+        return null;
     }
 
+    @Transactional
+    public ShoppingCartDTO removeWholeCartItem(Principal principal, Long cartItemId) {
+        String email = principal.getName();
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Long userId = user.getId();
+            ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId);
+            if (cart != null) {
+                CartItem cartItem = cartItemRepository.findById(cartItemId)
+                        .orElseThrow(() -> new RuntimeException("CartItem not found"));
+
+                if (cart.getCartItems().contains(cartItem)) {
+                    cart.getCartItems().remove(cartItem);
+                    cartItemRepository.delete(cartItem);
+
+                    double totalPrice = cart.getCartItems().stream().mapToDouble(CartItem::getPrice).sum();
+                    cart.setTotalPrice(totalPrice);
+
+                    ShoppingCart shoppingCart = shoppingCartRepository.save(cart);
+                    return shoppingCartDTOMapper.apply(shoppingCart);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Transactional
     public ShoppingCartDTO clearCart(Principal principal) {
-        Optional<User> userOptional = userRepository.findByEmail(principal.getName());
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
+        String email = principal.getName();
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            // Get user cart
+            User user = userOptional.get();
+            Long userId = user.getId();
+            ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId);
+            if (cart != null) {
+                // Remove all items from the cart
+                cartItemRepository.deleteAll(cart.getCartItems());
+                cart.getCartItems().clear();
+
+                // Update the cart's total price
+                cart.setTotalPrice(0.0);
+
+                // Save the updated cart
+                ShoppingCart shoppingCart = shoppingCartRepository.save(cart);
+                return shoppingCartDTOMapper.apply(shoppingCart);
+            }
         }
 
-        User user = userOptional.get();
-        Long userId = user.getId();
-
-        ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found for user id: " + userId));
-
-        cart.getItems().clear();
-        shoppingCartRepository.save(cart);
-
-        return shoppingCartDTOMapper.apply(cart);
+        return null;
     }
-
-
-
 }
