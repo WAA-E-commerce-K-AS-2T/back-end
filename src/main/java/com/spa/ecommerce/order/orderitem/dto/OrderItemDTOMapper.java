@@ -1,7 +1,10 @@
-package com.spa.ecommerce.orderitem.dto;
+package com.spa.ecommerce.order.orderitem.dto;
 
 
-import com.spa.ecommerce.orderitem.OrderItem;
+import com.spa.ecommerce.order.orderitem.OrderItem;
+import com.spa.ecommerce.product.dto.ProductDTOMapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -9,12 +12,15 @@ import java.util.function.Function;
 @Service
 public class OrderItemDTOMapper implements Function<OrderItem, OrderItemDTO> {
 
+    @Autowired
+    private ProductDTOMapper productDTOMapper;
+
     @Override
     public OrderItemDTO apply(OrderItem item) {
-        return new OrderItemDTO(
-                item.getItemId(),
-                item.getQuantity()
-        );
+        OrderItemDTO dto = new OrderItemDTO();
+        BeanUtils.copyProperties(item, dto);
+        dto.setProduct(productDTOMapper.apply(item.getProduct()));
+        return dto;
     }
 
     @Override

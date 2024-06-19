@@ -1,5 +1,6 @@
 package com.spa.ecommerce.shoppingcart;
 
+import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.shoppingcart.CartItem.dto.CartItemDTO;
 import com.spa.ecommerce.shoppingcart.dto.ShoppingCartDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/cart")
+@RequestMapping(Constant.SHOPPINGCART_URL_PREFIX)
 public class ShoppingCartController {
 
     @Autowired

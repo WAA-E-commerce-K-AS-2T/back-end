@@ -1,5 +1,6 @@
 package com.spa.ecommerce.order;
 
+import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.order.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,18 +14,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping(Constant.ORDER_URL_PREFIX)
 public class OrderController {
 
     @Autowired
     private OrderService orderService;
 
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(Principal principal, @RequestBody OrderDTO orderDTO) {
+        OrderDTO order = orderService.placeOrder(principal, orderDTO);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
+
+    //get order history
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        List<OrderDTO> orders = orderService.findAll();
+    public ResponseEntity<List<OrderDTO>> getAllOrders(Principal principal) {
+        List<OrderDTO> orders = orderService.findAll(principal);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
@@ -38,20 +48,12 @@ public class OrderController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
-        OrderDTO savedOrder = orderService.save(order);
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
-    }
 
-    @PutMapping("/{id}")
-    public void  updateOrder(@PathVariable int id,@RequestBody Order order) {
-        orderService.update(id, order);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Optional<OrderDTO>> updateOrder(@PathVariable long id, @RequestBody OrderDTO orderDTO) {
+//        Optional<OrderDTO> orderDto = orderService.update(id, orderDTO);
+//        return new ResponseEntity<>(orderDto, HttpStatus.OK);
+//    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-        orderService.delete(id.intValue());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+
 }

@@ -1,6 +1,7 @@
 package com.spa.ecommerce.order.dto;
 
 import com.spa.ecommerce.order.Order;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -10,11 +11,9 @@ public class OrderDTOMapper implements Function<Order, OrderDTO> {
 
     @Override
     public OrderDTO apply(Order order) {
-        return new OrderDTO(
-                order.getOrderId(),
-                order.getStatus(),
-                order.getAmount()
-        );
+        OrderDTO dto = new OrderDTO();
+        BeanUtils.copyProperties(order, dto);
+        return dto;
     }
 
     @Override
