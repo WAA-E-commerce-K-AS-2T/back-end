@@ -16,22 +16,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SellerController {
 
-    private final ProductService productService;
 
-    @PostMapping("/{sellerId}/products")
-    public ResponseEntity<ProductDTO> saveProduct(@PathVariable Long sellerId , @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
-        Optional<ProductDTO> productDTO = productService.saveProduct(sellerId, product, photos);
-        return productDTO
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
 
-    }
-
-    @PutMapping("/{sellerId}/products/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long sellerId , @PathVariable Long productId, @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
-        Optional<ProductDTO> productDTO = productService.updateProduct(productId, product, photos);
-        return productDTO
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
-    }
 }
