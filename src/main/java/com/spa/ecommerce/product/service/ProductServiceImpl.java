@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,9 @@ public class ProductServiceImpl implements ProductService {
     private final ReviewDTOMapper reviewDTOMapper;
 
     @Override
-    public Optional<ProductDTO> saveProduct(Long sellerId, ProductDTO productDTO, MultipartFile[] photos) {
-        Optional<User> OptUser = userRepository.findById(sellerId);
+    public Optional<ProductDTO> saveProduct(Principal principal, ProductDTO productDTO, MultipartFile[] photos) {
+        String email = principal.getName();
+        Optional<User> OptUser = userRepository.findByEmail(email);
         if(OptUser.isPresent()){
             User user = OptUser.get();
             Product product = new Product();

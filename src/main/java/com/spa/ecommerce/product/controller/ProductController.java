@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,21 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
 
+    @PostMapping
+    public ResponseEntity<ProductDTO> saveProduct(Principal principal, @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
+        Optional<ProductDTO> productDTO = productService.saveProduct(principal, product, photos);
+        return productDTO
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
+
+    }
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
+        Optional<ProductDTO> productDTO = productService.updateProduct(productId, product, photos);
+        return productDTO
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
+    }
 
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> getAllProducts(Pageable pageable) {

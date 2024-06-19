@@ -6,11 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    Optional<ProductDTO> saveProduct(Long sellerId, ProductDTO productDTO, MultipartFile [] photos);
+    Optional<ProductDTO> saveProduct(Principal principal, ProductDTO productDTO, MultipartFile [] photos);
 
     Page<ProductDTO> getAllProducts(Pageable pageable);
 

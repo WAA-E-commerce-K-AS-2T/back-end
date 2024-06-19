@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDTO> getAllCategories() {
         return categoryRepo.findAll()
-                .stream().map(categoryDTOMapper::toDTO).collect(Collectors.toList());
+                .stream().filter(cat -> !cat.getSubCategories().isEmpty()).map(categoryDTOMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
