@@ -2,6 +2,7 @@ package com.spa.ecommerce.product.controller;
 
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.product.dto.ProductDTO;
+import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.service.ProductService;
 import com.spa.ecommerce.review.ReviewDTO;
@@ -119,7 +120,7 @@ public class ProductController {
 
     //approve product
     @PutMapping("/{productId}/set-status")
-    public  ResponseEntity<ProductDTO> setProductStatus(@PathVariable Long productId, @RequestBody String status){
+    public  ResponseEntity<ProductDTO> setProductStatus(@PathVariable Long productId, @RequestBody ProductStatusUpdateDTO status){
         Optional<ProductDTO> productDTO = productService.setProductStatus(productId, status);
         return productDTO.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
