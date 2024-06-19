@@ -16,8 +16,4 @@ public class Buyer extends User{
     @OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     private ShoppingCart cart;
 
-
-//    @OneToMany(mappedBy = "customer")
-//    private Collection<Favorite> favorites;
-
 }

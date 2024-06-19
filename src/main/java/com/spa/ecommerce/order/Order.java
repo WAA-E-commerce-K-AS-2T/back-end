@@ -16,17 +16,24 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderId;
     @ManyToOne
-    private User user;
+    private User buyer;
     private Status  status;
     private double amount;
     private LocalDate date;
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 
+
+//    @ManyToOne
+//    private Address shippingAddress;
+//
+//    @ManyToOne
+//    private Address billingAddress;
+
     public Order(){}
 
-    public Order(User user, Status status, double amount, LocalDate date, List<OrderItem> orderItems) {
-        this.user = user;
+    public Order(User buyer, Status status, double amount, LocalDate date, List<OrderItem> orderItems) {
+        this.buyer = buyer;
         this.status = status;
         this.amount = amount;
         this.date = date;
