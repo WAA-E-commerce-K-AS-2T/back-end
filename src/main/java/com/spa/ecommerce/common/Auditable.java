@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable {
+public abstract class Auditable<U> {
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -23,7 +23,7 @@ public abstract class Auditable {
     @ManyToOne
     @JoinColumn(name = "created_by")
     @CreatedBy
-    private User createdBy;
+    private U createdBy;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
@@ -31,7 +31,7 @@ public abstract class Auditable {
     @ManyToOne
     @JoinColumn(name = "last_modified_by")
     @LastModifiedBy
-    private User lastModifiedBy;
+    private U lastModifiedBy;
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
@@ -41,11 +41,11 @@ public abstract class Auditable {
         this.createdDate = createdDate;
     }
 
-    public User getCreatedBy() {
+    public U getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(U createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -57,11 +57,11 @@ public abstract class Auditable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public User getLastModifiedBy() {
+    public U getLastModifiedBy() {
         return lastModifiedBy;
     }
 
-    public void setLastModifiedBy(User lastModifiedBy) {
+    public void setLastModifiedBy(U lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 }

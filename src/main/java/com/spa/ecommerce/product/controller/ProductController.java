@@ -61,16 +61,23 @@ public class ProductController {
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
+    // get details review
+
     @PostMapping("/{productId}/reviews")
     public ResponseEntity<ReviewDTO> saveReview(@PathVariable Long productId, @RequestBody ReviewDTO reviewDTO) {
         Optional<ProductDTO> product = productService.getProductById(productId);
         Optional<ReviewDTO> savedReview = Optional.empty();
         if (product.isPresent()){
+            reviewDTO.setProduct(product.get());
             savedReview = reviewService.save(reviewDTO);
         }
 
         return savedReview.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+    // edit review
+
+    //delete review
 
 }

@@ -1,10 +1,7 @@
 package com.spa.ecommerce.review;
 
+import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.entity.Product;
-import com.spa.ecommerce.user.Buyer;
-import com.spa.ecommerce.user.User;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -14,10 +11,9 @@ public class ReviewDTO {
     private Long id;
     private double rating;
     private String comment;
-    private Product product;
-    private Buyer user;
+    private ProductDTO product;
 
-    public ReviewDTO(Long id, double rating, String comment, Product product) {
+    public ReviewDTO(Long id, double rating, String comment, ProductDTO product) {
         this.id = id;
         this.rating = rating;
         this.comment = comment;

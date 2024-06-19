@@ -1,6 +1,8 @@
 package com.spa.ecommerce.review;
 
 import com.spa.ecommerce.category.Category;
+import com.spa.ecommerce.product.entity.Product;
+import com.spa.ecommerce.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,8 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Autowired
     private final ReviewRepository reviewRepository;
-
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private final ReviewDTOMapper reviewDTOMapper;
     @Override
@@ -32,13 +35,18 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public Optional<ReviewDTO> save(ReviewDTO reviewDTO) {
+        Optional<Product> product= productRepository.findById(reviewDTO.getProduct().getId());
         Review review = new Review();
         review.setId(reviewDTO.getId());
         review.setComment(reviewDTO.getComment());
-        //review.setBuyer(reviewDTO.getUser());
-        review.setProduct(reviewDTO.getProduct());
+        if (product.isPresent()) {
+            review.setProduct(product.get());
+        }
         review.setRating(reviewDTO.getRating());
-        return Optional.empty();
+
+        review = reviewRepository.save(review);
+
+        return Optional.of(reviewDTOMapper.apply(review));
     }
 
     @Override
