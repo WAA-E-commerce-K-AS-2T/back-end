@@ -1,6 +1,7 @@
 package com.spa.ecommerce.product.service;
 
 import com.spa.ecommerce.product.dto.ProductDTO;
+import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
 import com.spa.ecommerce.review.ReviewDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,6 @@ public interface ProductService {
     Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categories, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String size, String color);
 
     public List<ReviewDTO> getReviewsByProductID(Long id);
+
+    public Optional<ProductDTO> setProductStatus(Long id, ProductStatusUpdateDTO status);
 }

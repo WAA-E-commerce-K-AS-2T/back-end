@@ -6,6 +6,7 @@ import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductDTOMapper;
 import com.spa.ecommerce.product.dto.ProductSearchRequest;
+import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.CustomProductRepository;
 import com.spa.ecommerce.product.repository.ProductRepository;
@@ -15,7 +16,6 @@ import com.spa.ecommerce.productPhoto.service.CloudinaryServiceImpl;
 import com.spa.ecommerce.review.Review;
 import com.spa.ecommerce.review.ReviewDTO;
 import com.spa.ecommerce.review.ReviewDTOMapper;
-import com.spa.ecommerce.review.ReviewRepository;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -212,4 +212,19 @@ public class ProductServiceImpl implements ProductService {
                 .map(reviewDTOMapper::apply)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public Optional<ProductDTO> setProductStatus(Long id, ProductStatusUpdateDTO status) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product existingProduct = productOptional.get();
+            existingProduct.setStatus(status.getStatus());
+            productRepository.save(existingProduct);
+            return Optional.of(productDTOMapper.apply(existingProduct));
+        } else {
+            return Optional.empty();
+        }
+    }
+
 }
