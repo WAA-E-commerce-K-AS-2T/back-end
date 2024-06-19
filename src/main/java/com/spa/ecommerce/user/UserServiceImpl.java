@@ -1,9 +1,19 @@
 package com.spa.ecommerce.user;
 
+import com.spa.ecommerce.address.Address;
+import com.spa.ecommerce.address.AddressDTO;
+import com.spa.ecommerce.address.AddressRepository;
+import com.spa.ecommerce.buyer.BuyerDTOMapper;
+import com.spa.ecommerce.buyer.BuyerRepository;
+import com.spa.ecommerce.profile.ProfileDTO;
+import com.spa.ecommerce.seller.SellerDTOMapper;
+import com.spa.ecommerce.seller.SellerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,10 +25,25 @@ public class UserServiceImpl implements UserService {
     private UserDTOMapper userDTOMapper;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserRepository userRepository;
+    private BuyerDTOMapper buyerDTOMapper;
+
+    @Autowired
+    private BuyerRepository buyerRepository;
+
+    @Autowired
+    private SellerDTOMapper sellerDTOMapper;
+
+    @Autowired
+    private SellerRepository sellerRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public Collection<UserDTO> getAll() {
@@ -92,6 +117,59 @@ public class UserServiceImpl implements UserService {
             return Optional.of(userDTOMapper.apply(existingUser));
         } else {
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<?> getCurrentUser(Principal principal) {
+        Optional<Seller> seller = sellerRepository.findByEmail(principal.getName());
+        if (seller.isPresent()) {
+            return Optional.of(sellerDTOMapper.apply(seller.get()));
+        } else {
+            Optional<Buyer> buyer = buyerRepository.findByEmail(principal.getName());
+            if (buyer.isPresent()) {
+                return Optional.of(buyerDTOMapper.apply(buyer.get()));
+            } else {
+                return Optional.empty();
+            }
+        }
+    }
+
+    @Override
+    public String updateUser(Principal principal, ProfileDTO profileDTO) {
+        //return Optional.of("test");
+        Optional<Seller> seller = sellerRepository.findByEmail(principal.getName());
+        if (seller.isPresent()) {
+            return "Your Account has been changed";
+        } else {
+            Optional<Buyer> buyer = buyerRepository.findByEmail(principal.getName());
+            if (buyer.isPresent()) {
+//                Buyer saveObj = buyer.get();
+//
+//                saveObj.setFullName(profileDTO.getFullname());
+
+                //if(saveObj.getAddress() == null) {
+                    Address address = new Address();
+
+                    //address.setId(profileDTO.getAddress().getId());
+                    address.setAddress1("test");
+                    //address.setAddress2(profileDTO.getAddress().getAddress2());
+                    //address.setAddress3(profileDTO.getAddress().getAddress3());
+                    //address.setAddress4(profileDTO.getAddress().getAddress4());
+                    //address.setCity(profileDTO.getAddress().getCity());
+                    //address.setState(profileDTO.getAddress().getState());
+                    //address.setZipcode(profileDTO.getAddress().getZipcode());
+                    //address.setPincode(profileDTO.getAddress().getPincode());
+
+                    address = addressRepository.save(address);
+                    //saveObj.setAddress(address);
+                //}
+//                buyerRepository.save(saveObj);
+                System.out.println("asdfasdfas");
+                return "Your Account has been changed";
+            } else {
+                return "";
+            }
         }
     }
 

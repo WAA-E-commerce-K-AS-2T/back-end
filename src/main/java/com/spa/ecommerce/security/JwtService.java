@@ -1,5 +1,6 @@
 package com.spa.ecommerce.security;
 
+import com.spa.ecommerce.user.Buyer;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.sql.SQLOutput;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +34,12 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+
         return generateToken(new HashMap<>(), userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        extraClaims.put("username", userDetails.getUsername());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 

@@ -1,5 +1,6 @@
 package com.spa.ecommerce.user;
 
+import com.spa.ecommerce.address.Address;
 import com.spa.ecommerce.common.Auditable;
 import com.spa.ecommerce.privilege.Privilege;
 import com.spa.ecommerce.role.Role;

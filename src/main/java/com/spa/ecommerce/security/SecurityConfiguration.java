@@ -107,6 +107,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("privileges.delete")
 
+                        .requestMatchers(HttpMethod.GET, "/api/v1/profile" )
+                        .hasAnyAuthority("profile.read")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/profile" )
+                        .hasAnyAuthority("profile.write")
+
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

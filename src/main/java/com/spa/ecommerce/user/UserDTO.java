@@ -1,5 +1,6 @@
 package com.spa.ecommerce.user;
 
+import com.spa.ecommerce.address.AddressDTO;
 import com.spa.ecommerce.role.RoleDTO;
 
 import java.util.Collection;
