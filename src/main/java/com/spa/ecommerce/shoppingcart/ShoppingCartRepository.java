@@ -1,9 +1,9 @@
 package com.spa.ecommerce.shoppingcart;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.Optional;
+public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
 
-public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Integer> {
-    Optional<ShoppingCart> findByBuyerId(Long buyerId);
+    ShoppingCart findByBuyerId(Long buyerId);
 }
