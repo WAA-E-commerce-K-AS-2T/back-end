@@ -1,11 +1,19 @@
 package com.spa.ecommerce.shoppingcart.dto;
 
-public class ShoppingCartDTO {
-    private int id;
-    private int quantity;
+import com.spa.ecommerce.shoppingcart.CartItem.dto.CartItemDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    public ShoppingCartDTO(int id, int quantity) {
-        this.id = id;
-        this.quantity = quantity;
-    }
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ShoppingCartDTO {
+    private long id;
+    private List<CartItemDTO> items;
+    private double totalPrice;
+
 }

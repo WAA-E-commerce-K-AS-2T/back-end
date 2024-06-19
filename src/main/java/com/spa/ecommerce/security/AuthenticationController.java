@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RequestMapping()
 @RestController
+@CrossOrigin(origins = "*")
 public class AuthenticationController {
     private final JwtService jwtService;
 
