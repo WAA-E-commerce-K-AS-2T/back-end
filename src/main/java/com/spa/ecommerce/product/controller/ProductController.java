@@ -2,6 +2,7 @@ package com.spa.ecommerce.product.controller;
 
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.product.dto.ProductDTO;
+import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.service.ProductService;
 import com.spa.ecommerce.review.ReviewDTO;
 import com.spa.ecommerce.review.ReviewService;
@@ -112,6 +113,15 @@ public class ProductController {
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
         Optional<ReviewDTO> deletedReview = reviewService.delete(reviewId);
         return deletedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+
+    //approve product
+    @PutMapping("/{productId}/set-status")
+    public  ResponseEntity<ProductDTO> setProductStatus(@PathVariable Long productId, @RequestBody String status){
+        Optional<ProductDTO> productDTO = productService.setProductStatus(productId, status);
+        return productDTO.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 

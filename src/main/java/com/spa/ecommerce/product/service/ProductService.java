@@ -24,4 +24,6 @@ public interface ProductService {
     Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categories, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String size, String color);
 
     public List<ReviewDTO> getReviewsByProductID(Long id);
+
+    public Optional<ProductDTO> setProductStatus(Long id, String status);
 }

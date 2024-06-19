@@ -15,7 +15,6 @@ import com.spa.ecommerce.productPhoto.service.CloudinaryServiceImpl;
 import com.spa.ecommerce.review.Review;
 import com.spa.ecommerce.review.ReviewDTO;
 import com.spa.ecommerce.review.ReviewDTOMapper;
-import com.spa.ecommerce.review.ReviewRepository;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -212,4 +211,27 @@ public class ProductServiceImpl implements ProductService {
                 .map(reviewDTOMapper::apply)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public Optional<ProductDTO> setProductStatus(Long id, String status) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product existingProduct = productOptional.get();
+            if (status.equalsIgnoreCase("approve")) {
+                existingProduct.setStatus(ProductStatusEnum.APPROVED);
+            } else if (status.equalsIgnoreCase("reject")) {
+                existingProduct.setStatus(ProductStatusEnum.REJECTED);
+            } else if (status.equalsIgnoreCase("delete")) {
+                existingProduct.setStatus(ProductStatusEnum.DELETE);
+            } else {
+                existingProduct.setStatus(ProductStatusEnum.IN_REVIEW);
+            }
+            productRepository.save(existingProduct);
+            return Optional.of(productDTOMapper.apply(existingProduct));
+        } else {
+            return Optional.empty();
+        }
+    }
+
 }
