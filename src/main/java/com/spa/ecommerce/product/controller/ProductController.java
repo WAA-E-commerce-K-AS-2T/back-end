@@ -77,7 +77,25 @@ public class ProductController {
     }
 
     // edit review
+    @PutMapping("/{productId}/reviews/{reviewId}")
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long productId, @PathVariable Long reviewId, @RequestBody ReviewDTO reviewDTO) {
+        Optional<ProductDTO> product = productService.getProductById(productId);
+        Optional<ReviewDTO> updatedReview = Optional.empty();
+        if (product.isPresent()) {
+            reviewDTO.setProduct(product.get());
+            updatedReview = reviewService.update(reviewId, reviewDTO);
+        }
+
+        return updatedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
     //delete review
+    @DeleteMapping("/{productId}/reviews/{reviewId}")
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
+        Optional<ReviewDTO> deletedReview = reviewService.delete(reviewId);
+        return deletedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
 }

@@ -23,13 +23,13 @@ public class ReviewServiceImpl implements ReviewService{
     @Autowired
     private final ReviewDTOMapper reviewDTOMapper;
     @Override
-    public Collection<ReviewDTO> getAll() {
+    public Collection<ReviewDTO> getAllReviews() {
         return reviewRepository.findAll().stream().map(reviewDTOMapper)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ReviewDTO> get(Long id) {
+    public Optional<ReviewDTO> getReviewById(Long id) {
         return reviewRepository.findById(id).map(reviewDTOMapper);
     }
 
@@ -64,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public Optional<ReviewDTO> delete(Long id, ReviewDTO entity) {
+    public Optional<ReviewDTO> delete(Long id) {
         Optional<Review> existingReviewOpt = reviewRepository.findById(id);
         if (existingReviewOpt.isPresent()) {
             reviewRepository.deleteById(id);
