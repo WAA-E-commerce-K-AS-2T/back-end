@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -21,11 +22,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderDTOMapper orderDTOMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ShoppingCartRepository shoppingCartRepository;
+    @Autowired
+    private ItemRepository itemRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public Collection<OrderDTO> getAll() {
         return orderRepository.findAll().stream().map(orderDTOMapper).collect(Collectors.toList());
     }
+
 
     @Override
     public Optional<OrderDTO> get(Long id) {

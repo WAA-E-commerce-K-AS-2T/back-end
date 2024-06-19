@@ -1,5 +1,6 @@
 package com.spa.ecommerce.order.dto;
 
+import com.spa.ecommerce.order.PaymentMethod;
 import com.spa.ecommerce.order.Status;
 import lombok.Data;
 

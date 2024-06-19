@@ -12,4 +12,5 @@ public class Constant {
     public static final String REVIEW_URL_PREFIX = API_URL_v1_PREFIX + "/review";
     public static final String SHOPPINGCART_URL_PREFIX = API_URL_v1_PREFIX + "/cart";
     public static final String ORDER_URL_PREFIX = API_URL_v1_PREFIX + "/orders";
+
 }

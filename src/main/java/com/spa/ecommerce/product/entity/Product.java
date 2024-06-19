@@ -57,6 +57,8 @@ public class Product {
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviews;
 
+    private int timesBought;
+
     public void addProductPhoto(ProductPhoto productPhoto){
         this.productPhotos.add(productPhoto);
     }

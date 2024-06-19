@@ -1,6 +1,7 @@
 package com.spa.ecommerce.order.dto;
 
 import com.spa.ecommerce.order.Order;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
