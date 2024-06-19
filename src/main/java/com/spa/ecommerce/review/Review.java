@@ -1,5 +1,7 @@
 package com.spa.ecommerce.review;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.spa.ecommerce.common.Auditable;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.user.Buyer;
@@ -19,5 +21,6 @@ public class Review extends Auditable<Buyer> {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonManagedReference
     private Product product;
 }
