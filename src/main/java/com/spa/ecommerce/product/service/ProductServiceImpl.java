@@ -6,6 +6,7 @@ import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductDTOMapper;
 import com.spa.ecommerce.product.dto.ProductSearchRequest;
+import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.CustomProductRepository;
 import com.spa.ecommerce.product.repository.ProductRepository;
@@ -214,19 +215,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Optional<ProductDTO> setProductStatus(Long id, String status) {
+    public Optional<ProductDTO> setProductStatus(Long id, ProductStatusUpdateDTO status) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product existingProduct = productOptional.get();
-            if (status.equalsIgnoreCase("approve")) {
-                existingProduct.setStatus(ProductStatusEnum.APPROVED);
-            } else if (status.equalsIgnoreCase("reject")) {
-                existingProduct.setStatus(ProductStatusEnum.REJECTED);
-            } else if (status.equalsIgnoreCase("delete")) {
-                existingProduct.setStatus(ProductStatusEnum.DELETE);
-            } else {
-                existingProduct.setStatus(ProductStatusEnum.IN_REVIEW);
-            }
+            existingProduct.setStatus(status.getStatus());
             productRepository.save(existingProduct);
             return Optional.of(productDTOMapper.apply(existingProduct));
         } else {
