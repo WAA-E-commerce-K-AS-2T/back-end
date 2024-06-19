@@ -1,5 +1,6 @@
 package com.spa.ecommerce.category;
 
+import com.spa.ecommerce.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping(Constant.CATEGORY_URL_PREFIX)
 public class CategoryController {
 
     @Autowired

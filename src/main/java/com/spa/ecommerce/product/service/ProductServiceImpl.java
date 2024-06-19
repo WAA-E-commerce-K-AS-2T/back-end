@@ -12,6 +12,10 @@ import com.spa.ecommerce.product.repository.ProductRepository;
 import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
 import com.spa.ecommerce.productPhoto.repository.ProductPhotoRepository;
 import com.spa.ecommerce.productPhoto.service.CloudinaryServiceImpl;
+import com.spa.ecommerce.review.Review;
+import com.spa.ecommerce.review.ReviewDTO;
+import com.spa.ecommerce.review.ReviewDTOMapper;
+import com.spa.ecommerce.review.ReviewRepository;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -28,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductPhotoRepository productPhotoRepository;
     private final CustomProductRepository customProductRepository;
     private final CategoryRepo categoryRepo;
+    private final ReviewDTOMapper reviewDTOMapper;
 
     @Override
     public Optional<ProductDTO> saveProduct(Long sellerId, ProductDTO productDTO, MultipartFile[] photos) {
@@ -193,5 +199,13 @@ public class ProductServiceImpl implements ProductService {
         searchRequest.setColor(color);
         searchRequest.setMaterial(material);
         return customProductRepository.searchProduct(searchRequest, pageable).map(productDTOMapper);
+    }
+
+    @Override
+    public List<ReviewDTO> getReviewsByProductID(Long id) {
+        List<Review> reviews = productRepository.getReviewsByProductID(id);
+        return reviews.stream()
+                .map(reviewDTOMapper::apply)
+                .collect(Collectors.toList());
     }
 }

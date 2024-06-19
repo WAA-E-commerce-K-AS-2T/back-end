@@ -3,6 +3,8 @@ package com.spa.ecommerce.product.controller;
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.service.ProductService;
+import com.spa.ecommerce.review.ReviewDTO;
+import com.spa.ecommerce.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(Constant.PRODUCT_URL_PREFIX)
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ReviewService reviewService;
 
 
     @GetMapping
@@ -50,4 +54,30 @@ public class ProductController {
                                                           ){
         return new ResponseEntity<>(productService.filterProducts(pageable, categories, minPrice, maxPrice, brand, newArrival, color, material), HttpStatus.OK);
     }
+
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<List<ReviewDTO>> getReviewsByProductID(@PathVariable("productId") Long id) {
+        List<ReviewDTO> reviews = productService.getReviewsByProductID(id);
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    // get details review
+
+    @PostMapping("/{productId}/reviews")
+    public ResponseEntity<ReviewDTO> saveReview(@PathVariable Long productId, @RequestBody ReviewDTO reviewDTO) {
+        Optional<ProductDTO> product = productService.getProductById(productId);
+        Optional<ReviewDTO> savedReview = Optional.empty();
+        if (product.isPresent()){
+            reviewDTO.setProduct(product.get());
+            savedReview = reviewService.save(reviewDTO);
+        }
+
+        return savedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    // edit review
+
+    //delete review
+
 }

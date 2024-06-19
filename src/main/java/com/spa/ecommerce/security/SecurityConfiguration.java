@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login", "/signup", "/logout", "/reset-password/**").permitAll()
+                        .requestMatchers("/login", "/signup", "/logout", "/reset-password/**", "/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX )
                         .hasAnyAuthority("product.read")

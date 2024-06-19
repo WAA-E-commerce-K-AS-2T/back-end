@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setEmail(user.getEmail());
         newUser.setEnabled(user.getIsActive());
-        userRepository.save(newUser);
+        newUser = userRepository.save(newUser);
 
         return Optional.of(userDTOMapper.apply(newUser));
     }
