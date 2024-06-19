@@ -1,27 +1,23 @@
-package com.spa.ecommerce.shoppingcart.dto;
+package com.spa.ecommerce.shoppingcart;
 
 
-import com.spa.ecommerce.shoppingcart.CartItem.dto.CartItemDTOMapper;
-import com.spa.ecommerce.shoppingcart.ShoppingCart;
+import com.spa.ecommerce.product.dto.ProductDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
 
 @Service
 public class ShoppingCartDTOMapper implements Function<ShoppingCart, ShoppingCartDTO> {
 
     @Autowired
-    private CartItemDTOMapper cartItemDTOMapper;
-
+    private ProductDTOMapper productDTOMapper;
 
     @Override
     public ShoppingCartDTO apply(ShoppingCart shoppingCart) {
         return new ShoppingCartDTO(
                 shoppingCart.getId(),
-                shoppingCart.getCartItems().stream().map(dto -> cartItemDTOMapper.toDTO(dto)).collect(Collectors.toList()),
-                shoppingCart.getTotalPrice()
+                shoppingCart.getQuantity(),
+                productDTOMapper.apply(shoppingCart.getProduct())
         );
     }
 

@@ -1,27 +1,19 @@
 package com.spa.ecommerce.shoppingcart;
 
+import com.spa.ecommerce.common.Auditable;
 import com.spa.ecommerce.product.entity.Product;
-import com.spa.ecommerce.shoppingcart.CartItem.entity.CartItem;
-import com.spa.ecommerce.user.User;
+import com.spa.ecommerce.user.Buyer;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Data
-public class ShoppingCart {
+public class ShoppingCart extends Auditable<Buyer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Integer quantity;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
-    private List<CartItem> cartItems = new ArrayList<>();
-
-    private double totalPrice;
-
-    @OneToOne
-    @JoinColumn(name = "buyer_id")
-    private User buyer;
+    @ManyToOne
+    private Product product;
 }
