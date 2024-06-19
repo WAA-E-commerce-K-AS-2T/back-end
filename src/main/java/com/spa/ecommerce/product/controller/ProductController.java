@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(Constant.PRODUCT_URL_PREFIX)
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ReviewService reviewService;
 
 
     @GetMapping
@@ -57,6 +59,18 @@ public class ProductController {
     public ResponseEntity<List<ReviewDTO>> getReviewsByProductID(@PathVariable("productId") Long id) {
         List<ReviewDTO> reviews = productService.getReviewsByProductID(id);
         return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    @PostMapping("/{productId}/reviews")
+    public ResponseEntity<ReviewDTO> saveReview(@PathVariable Long productId, @RequestBody ReviewDTO reviewDTO) {
+        Optional<ProductDTO> product = productService.getProductById(productId);
+        Optional<ReviewDTO> savedReview = Optional.empty();
+        if (product.isPresent()){
+            savedReview = reviewService.save(reviewDTO);
+        }
+
+        return savedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 }

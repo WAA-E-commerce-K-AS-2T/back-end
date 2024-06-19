@@ -43,6 +43,24 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/login", "/signup", "/logout", "/reset-password/**", "/**").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX )
+                        .hasAnyAuthority("product.read")
+                        .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX )
+                        .hasAnyAuthority("product.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/**" )
+                        .hasAnyAuthority("product.write")
+                        .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/**" )
+                        .hasAnyAuthority("product.delete")
+
+                        .requestMatchers(HttpMethod.GET, Constant.SHOPPINGCART_URL_PREFIX )
+                        .hasAnyAuthority("product.read")
+                        .requestMatchers(HttpMethod.POST, Constant.SHOPPINGCART_URL_PREFIX )
+                        .hasAnyAuthority("product.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.SHOPPINGCART_URL_PREFIX+ "/**" )
+                        .hasAnyAuthority("product.write")
+                        .requestMatchers(HttpMethod.DELETE, Constant.SHOPPINGCART_URL_PREFIX+ "/**" )
+                        .hasAnyAuthority("product.delete")
+
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_USER_URL_PREFIX )
                         .hasAnyAuthority("users.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_USER_URL_PREFIX )
@@ -70,15 +88,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/**" )
                         .hasAnyAuthority("privileges.write")
                         .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/**" )
-                        .hasAnyAuthority("privileges.delete")
-
-                        .requestMatchers(HttpMethod.GET, "/admin/privileges" )
-                        .hasAnyAuthority("privileges.read")
-                        .requestMatchers(HttpMethod.POST, "/admin/privileges" )
-                        .hasAnyAuthority("privileges.write")
-                        .requestMatchers(HttpMethod.PUT, "/admin/privileges" )
-                        .hasAnyAuthority("privileges.write")
-                        .requestMatchers(HttpMethod.DELETE, "/admin/privileges" )
                         .hasAnyAuthority("privileges.delete")
 
                         .anyRequest().authenticated())

@@ -1,11 +1,14 @@
 package com.spa.ecommerce.shoppingcart;
 
+import com.spa.ecommerce.shoppingCartItem.dto.CartItemDTO;
 import com.spa.ecommerce.shoppingcart.dto.ShoppingCartDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -48,4 +51,42 @@ public class ShoppingCartController {
         shoppingCartService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
+    /*****
+     *
+     * Shopping cart
+     * main
+     * Features
+     *
+     */
+
+
+//    @GetMapping
+//    public ShoppingCartDTO getCartByUserId(HttpServletRequest request) {
+//        Long userId = (Long) request.getAttribute("userId");
+//        return shoppingCartService.getCartByUserId(userId);
+//    }
+
+    @PostMapping("/items")
+    public CartItemDTO addCartItem(Principal principal, @RequestBody CartItemDTO cartItemDTO) {
+        return shoppingCartService.addCartItem(principal, cartItemDTO);
+    }
+
+    @PutMapping("/items/{cartItemId}")
+    public CartItemDTO updateCartItem(Principal principal, @PathVariable int cartItemId, @RequestBody CartItemDTO cartItemDTO) {
+        return shoppingCartService.updateCartItem(principal,cartItemId, cartItemDTO);
+    }
+
+    @DeleteMapping("/items/{cartItemId}")
+    public void removeCartItem(Principal principal, @PathVariable int cartItemId) {
+        shoppingCartService.removeCartItem(principal, cartItemId);
+    }
+
+    @DeleteMapping("/clear")
+    public ShoppingCartDTO clearCart(Principal principal) {
+        return shoppingCartService.clearCart(principal);
+    }
+
+
 }

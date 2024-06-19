@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class ReviewServiceImpl implements ReviewService{
         Review review = new Review();
         review.setId(reviewDTO.getId());
         review.setComment(reviewDTO.getComment());
-        review.setUser(reviewDTO.getUser());
+        //review.setBuyer(reviewDTO.getUser());
         review.setProduct(reviewDTO.getProduct());
         review.setRating(reviewDTO.getRating());
         return Optional.empty();
