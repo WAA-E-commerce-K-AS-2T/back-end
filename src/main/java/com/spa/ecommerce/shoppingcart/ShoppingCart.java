@@ -14,7 +14,7 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cartId;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<CartItem> items;
     @OneToOne
     private User buyer;

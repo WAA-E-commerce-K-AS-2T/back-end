@@ -92,9 +92,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         User user = userOptional.get();
         Long userId = user.getId();
 
-        // Retrieve the shopping cart for the user
-        ShoppingCart cart = shoppingCartRepository.findByBuyerId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found for user id: " + userId));
+        Optional<ShoppingCart> cart= Optional.of(shoppingCartRepository.findByBuyerId(user.getId()).orElse(new ShoppingCart()));
+        cart.get().setBuyer(user);
+        shoppingCartRepository.save(cart.get());
 
         // Retrieve the product from the database
         Product product = productRepository.findById(cartItemDTO.getProductDTO().getId())
@@ -104,14 +104,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CartItem cartItem = new CartItem();
         cartItem.setQuantity(cartItemDTO.getQuantity());
         cartItem.setProduct(product);
-        cartItem.setCart(cart);
+        cartItem.setCart(cart.get());
 
         // Save the CartItem to the database
         cartItem = cartItemRepository.save(cartItem);
 
         // Add the CartItem to the shopping cart
-        cart.getItems().add(cartItem);
-        shoppingCartRepository.save(cart);
+        //cart.getItems().add(cartItem);
+        System.out.println("item saved!");
 
         // Return the saved CartItem as a DTO
         return cartItemDTOMapper.apply(cartItem);

@@ -88,39 +88,8 @@ INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_
 INSERT INTO seller (id) VALUES (3);
 INSERT INTO buyer (id) VALUES (2);
 
-INSERT INTO productdb.users_roles (id, role_id, user_id) VALUES (1, 1, 1);
-INSERT INTO productdb.users_roles (id, role_id, user_id) VALUES (2, 4, 2);
-INSERT INTO productdb.users_roles (id, role_id, user_id) VALUES (3, 3, 3);
-
-
-
--- Root categories
-INSERT INTO category (name, category_parent) VALUES ('Books', NULL); -- id = 1
-INSERT INTO category (name, category_parent) VALUES ('Electronics', NULL); -- id = 2
-
--- Subcategories for Books
-INSERT INTO category (name, category_parent) VALUES ('Fiction', 1); -- id = 3
-INSERT INTO category (name, category_parent) VALUES ('Non-Fiction', 1); -- id = 4
-INSERT INTO category (name, category_parent) VALUES ('Children\'s Books', 1); -- id = 5
-
--- Subcategories for Fiction
-INSERT INTO category (name, category_parent) VALUES ('Mystery', 3); -- id = 6
-INSERT INTO category (name, category_parent) VALUES ('Fantasy', 3); -- id = 7
-
--- Subcategories for Non-Fiction
-INSERT INTO category (name, category_parent) VALUES ('Biography', 4); -- id = 8
-INSERT INTO category (name, category_parent) VALUES ('Science', 4); -- id = 9
-
--- Subcategories for Children's Books
-INSERT INTO category (name, category_parent) VALUES ('Picture Books', 5); -- id = 10
-INSERT INTO category (name, category_parent) VALUES ('Early Readers', 5); -- id = 11
-
--- Subcategories for Electronics
-INSERT INTO category (name, category_parent) VALUES ('Computers', 2); -- id = 12
-INSERT INTO category (name, category_parent) VALUES ('Mobile Phones', 2); -- id = 13
-
--- Subcategories for Computers
-INSERT INTO category (name, category_parent) VALUES ('Laptops', 12); -- id = 14
-INSERT INTO category (name, category_parent) VALUES ('Desktops', 12); -- id = 15
+INSERT INTO users_roles (id, role_id, user_id) VALUES (1, 1, 1);
+INSERT INTO users_roles (id, role_id, user_id) VALUES (2, 4, 2);
+INSERT INTO users_roles (id, role_id, user_id) VALUES (3, 3, 3);
 
 
