@@ -37,9 +37,9 @@ VALUES ('users.read'),
        ('review.read'),
        ('review.write'),
        ('review.delete'),
-       ('shoppingcard.read'),
-       ('shoppingcard.write'),
-       ('shoppingcard.delete'),
+       ('shoppingcart.read'),
+       ('shoppingcart.write'),
+       ('shoppingcart.delete'),
        ('none.');
 
 INSERT INTO roles_privileges (privilege_id, role_id)
