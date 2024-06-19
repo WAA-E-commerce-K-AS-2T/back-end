@@ -1,6 +1,7 @@
 package com.spa.ecommerce.security;
 
 import com.spa.ecommerce.user.User;
+import com.spa.ecommerce.user.UserDTOMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,13 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*")
 public class AuthenticationController {
+    private final UserDTOMapper userDTOMapper;
     private final JwtService jwtService;
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+    public AuthenticationController(UserDTOMapper userDTOMapper, JwtService jwtService, AuthenticationService authenticationService) {
+        this.userDTOMapper = userDTOMapper;
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
     }
@@ -36,6 +39,7 @@ public class AuthenticationController {
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
+        loginResponse.setUser(userDTOMapper.apply(authenticatedUser));
 
         return ResponseEntity.ok(loginResponse);
     }
