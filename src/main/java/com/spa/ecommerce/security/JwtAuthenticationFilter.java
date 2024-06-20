@@ -71,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception exception) {
             //handlerExceptionResolver.resolveException(request, response, null, exception);
             // Handle expired JWT here
+
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("JWT has expired");
             response.getWriter().flush();

@@ -1,16 +1,18 @@
 package com.spa.ecommerce.order;
 
+import com.spa.ecommerce.exception.order.CancelOrderException;
 import com.spa.ecommerce.order.dto.OrderDTO;
 import com.spa.ecommerce.order.dto.OrderDTOMapper;
 import com.spa.ecommerce.order.orderitem.OrderItem;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.ProductRepository;
 import com.spa.ecommerce.role.Role;
+import com.spa.ecommerce.seller.SellerRepository;
 import com.spa.ecommerce.shoppingcart.CartItem.entity.CartItem;
 import com.spa.ecommerce.shoppingcart.CartItem.repository.CartItemRepository;
 import com.spa.ecommerce.shoppingcart.ShoppingCart;
 import com.spa.ecommerce.shoppingcart.ShoppingCartRepository;
-import com.spa.ecommerce.user.SellerRepository;
+//import com.spa.ecommerce.user.SellerRepository;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -128,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Order cancelOrder(Principal principal, long orderId) {
+    public OrderDTO cancelOrder(Principal principal, long orderId) {
         String email = principal.getName();
         Optional<User> userOptional = userRepository.findByEmail(email);
 
@@ -147,9 +149,11 @@ public class OrderServiceImpl implements OrderService {
 
                     if (order.getStatus() == Status.PROCESSING || order.getStatus() == Status.PENDING) {
                         order.setStatus(Status.CANCELLED);
-                        return orderRepository.save(order);
+//                        return orderRepository.save(order);
+                        Order updatedOrder = orderRepository.save(order);
+                        return orderDTOMapper.apply(updatedOrder);
                     } else {
-                        throw new RuntimeException("Order cannot be cancelled");
+                        throw new CancelOrderException("Order cannot be cancelled", "ORDER_CANNOT_BE_CANCELLED");
                     }
 
                 }
@@ -171,10 +175,12 @@ public class OrderServiceImpl implements OrderService {
                     Order order = orderItem.getOrder();
                     if (order.getStatus() == Status.PROCESSING || order.getStatus() == Status.PENDING) {
                         order.setStatus(Status.CANCELLED);
-                        orderRepository.save(order);
-                        return order;
+//                        orderRepository.save(order);
+//                        return order;
+                        Order updatedOrder = orderRepository.save(order);
+                        return orderDTOMapper.apply(updatedOrder);
                     } else {
-                        throw new RuntimeException("Order cannot be cancelled");
+                        throw new CancelOrderException("Order cannot be cancelled", "ORDER_CANNOT_BE_CANCELLED");
                     }
                 }
 
@@ -184,7 +190,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateOrderStatus(Principal principal, long orderId) {
+    public OrderDTO updateOrderStatus(Principal principal, long orderId) {
         String email = principal.getName();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -214,7 +220,9 @@ public class OrderServiceImpl implements OrderService {
                             throw new RuntimeException("Order status cannot be updated");
                         }
 
-                        return orderRepository.save(order);
+//                        return orderRepository.save(order);
+                        Order updatedOrder = orderRepository.save(order);
+                        return orderDTOMapper.apply(updatedOrder);
                     } else {
                         throw new RuntimeException("No order items found for the user");
                     }
