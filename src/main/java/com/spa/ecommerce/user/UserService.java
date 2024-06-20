@@ -5,8 +5,6 @@ import com.spa.ecommerce.profile.ProfileDTO;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 
 import java.security.Principal;
-import javax.swing.text.html.Option;
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +15,7 @@ public interface UserService extends GeneralService<UserDTO, Long> {
 
     Optional<?> getCurrentUser(Principal principal);
 
-    String updateUser(Long id, ProfileDTO profileDTO);
+    String updateUser(Principal principal, ProfileDTO profileDTO);
 
     Optional<List<OrderItemDTO>> getOrderItemsForSeller(Principal principal);
 
