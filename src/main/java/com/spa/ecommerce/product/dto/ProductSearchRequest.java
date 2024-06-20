@@ -19,5 +19,5 @@ public class ProductSearchRequest {
     private Boolean newArrival;
     private String color;
     private String material;
-    //private int reviews;
+    private String name;
 }

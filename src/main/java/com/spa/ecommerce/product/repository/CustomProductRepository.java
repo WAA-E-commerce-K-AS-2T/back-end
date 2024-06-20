@@ -1,6 +1,7 @@
 package com.spa.ecommerce.product.repository;
 
 import com.spa.ecommerce.category.Category;
+import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.product.dto.ProductSearchRequest;
 import com.spa.ecommerce.product.entity.Product;
 import io.micrometer.common.lang.Nullable;
@@ -21,15 +22,21 @@ public class CustomProductRepository {
 
     public Page<Product> searchProduct(ProductSearchRequest searchRequest, Pageable pageable) {
         Specification<Product> specs = Specification
-                .where(categoryEqual(searchRequest.getCategories()))
+                .where(withStatus(ProductStatusEnum.APPROVED))
+                .and(categoryEqual(searchRequest.getCategories()))
                 .and(priceGreaterThanEqual(searchRequest.getMinPrice()))
                 .and(priceLessThanEqual(searchRequest.getMaxPrice()))
                 .and(brandEqual(searchRequest.getBrand()))
                 .and(latestArrivals(searchRequest.getNewArrival()))
                 .and(colorEqual(searchRequest.getColor()))
-                .and(materialEqual(searchRequest.getMaterial()));
+                .and(materialEqual(searchRequest.getMaterial()))
+                .and(nameEqual(searchRequest.getName()));
 
         return productRepository.findAll(specs, pageable);
+    }
+
+    static Specification<Product> withStatus(ProductStatusEnum status) {
+        return (root, query, criteriaBuilder)-> criteriaBuilder.equal(root.get("status"), status);
     }
 
     static Specification<Product> categoryEqual(List<Category> categories) {
@@ -98,4 +105,13 @@ public class CustomProductRepository {
             return criteriaBuilder.equal(root.get("material"), material);
         };
     }
+    static Specification<Product> nameEqual(String name) {
+        return (root, query, criteriaBuilder) -> {
+            if (name == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.like(root.get("name"), "%" + name + "%");
+        };
+    }
+
 }
