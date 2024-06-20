@@ -21,7 +21,7 @@ public class ReviewDTOMapper implements Function<Review, ReviewDTO> {
         }
 
         String fullName = null;
-        if (review.getCreatedBy().getFullName() != null){
+        if (review.getCreatedBy()!= null){
             fullName = review.getCreatedBy().getFullName();
         }
 
