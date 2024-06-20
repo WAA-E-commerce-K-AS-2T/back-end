@@ -18,4 +18,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query ("SELECT p.reviews FROM Product p where p.id = :id")
     public List<Review> getReviewsByProductID(Long id);
+
+    @Query("SELECT p FROM Product p WHERE p.seller.id = :sellerId")
+    List<Product> findAllProductBySellerId(@Param("sellerId") Long sellerId);
+
+    @Query("SELECT p FROM Product p JOIN p.reviews r WHERE r.id = : reviewId")
+    Product findByReviewId(@Param("reviewId") Long reviewId);
 }

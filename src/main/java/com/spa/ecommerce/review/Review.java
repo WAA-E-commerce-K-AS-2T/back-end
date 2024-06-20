@@ -7,11 +7,14 @@ import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.user.Buyer;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
 public class Review extends Auditable<Buyer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,7 @@ public class Review extends Auditable<Buyer> {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonManagedReference
+
+    @JsonBackReference(value = "product-review")
     private Product product;
 }

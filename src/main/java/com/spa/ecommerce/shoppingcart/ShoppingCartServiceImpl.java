@@ -1,5 +1,6 @@
 package com.spa.ecommerce.shoppingcart;
 
+import com.spa.ecommerce.exception.ShoppingCartException;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.ProductRepository;
 import com.spa.ecommerce.shoppingcart.CartItem.dto.CartItemDTO;
@@ -189,6 +190,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             }
         }
 
-        return null;
+        throw  new ShoppingCartException("buyer not found");
+    }
+
+    @Override
+    public ShoppingCartDTO getShoppingCart(Principal principal) {
+        String email = principal.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            ShoppingCart cart = shoppingCartRepository.findByBuyerId(user.getId());
+            if (cart != null) {
+                return shoppingCartDTOMapper.apply(cart);
+            } else return new ShoppingCartDTO();
+        }
+       throw new ShoppingCartException("buyer not found");
     }
 }

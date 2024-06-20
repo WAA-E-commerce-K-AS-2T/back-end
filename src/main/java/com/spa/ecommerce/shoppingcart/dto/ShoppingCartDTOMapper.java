@@ -21,7 +21,8 @@ public class ShoppingCartDTOMapper implements Function<ShoppingCart, ShoppingCar
         return new ShoppingCartDTO(
                 shoppingCart.getId(),
                 shoppingCart.getCartItems().stream().map(dto -> cartItemDTOMapper.toDTO(dto)).collect(Collectors.toList()),
-                shoppingCart.getTotalPrice()
+                shoppingCart.getTotalPrice(),
+                shoppingCart.getCartItems().size()
         );
     }
 

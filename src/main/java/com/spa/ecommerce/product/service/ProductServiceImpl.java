@@ -3,9 +3,8 @@ package com.spa.ecommerce.product.service;
 import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.category.CategoryRepo;
 import com.spa.ecommerce.common.ProductStatusEnum;
-import com.spa.ecommerce.product.dto.ProductDTO;
-import com.spa.ecommerce.product.dto.ProductDTOMapper;
-import com.spa.ecommerce.product.dto.ProductSearchRequest;
+import com.spa.ecommerce.exception.ProductException;
+import com.spa.ecommerce.product.dto.*;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.CustomProductRepository;
 import com.spa.ecommerce.product.repository.ProductRepository;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +45,12 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
     private final CategoryRepo categoryRepo;
     private final ReviewDTOMapper reviewDTOMapper;
+    private final ProductResponseDTOMapper productResponseDTOMapper;
 
     @Override
-    public Optional<ProductDTO> saveProduct(Long sellerId, ProductDTO productDTO, MultipartFile[] photos) {
-        Optional<User> OptUser = userRepository.findById(sellerId);
+    public ProductResponseDto saveProduct(Principal principal, ProductDTO productDTO, MultipartFile[] photos) {
+        String email = principal.getName();
+        Optional<User> OptUser = userRepository.findByEmail(email);
         if(OptUser.isPresent()){
             User user = OptUser.get();
             Product product = new Product();
@@ -62,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
             BeanUtils.copyProperties(productDTO, product);
-            product.setStatus(ProductStatusEnum.IN_REVIEW);
+            product.setStatus(ProductStatusEnum.APPROVED);
             product.setTimesBought(0);
             product.setSeller(user);
             product.setCategories(productCategories);
@@ -82,32 +84,37 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
             }
-            productRepository.save(product);
-            return Optional.of(productDTOMapper.apply(product));
-        } else{
-            return Optional.empty();
+            Product p = productRepository.save(product);
+            return productResponseDTOMapper.toDto(p);
+        }else{
+            throw new ProductException("Token not found");
         }
     }
 
     @Override
-    public Page<ProductDTO> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productDTOMapper);
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productResponseDTOMapper::toDto);
     }
 
     @Override
-    public Optional<ProductDTO> deleteById(Long id) {
+    public ProductResponseDto deleteById(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        if(product.isPresent()){
-            productRepository.deleteById(id);
-            return Optional.of(productDTOMapper.apply(product.get()));
-        }else {
-            return Optional.empty();
+        if (product.isPresent()) {
+            Product product1 = product.get();
+            if (product1.getTimesBought() == 0) {
+                productRepository.deleteById(id);
+                return productResponseDTOMapper.toDto(product1);
+            } else {
+                throw new ProductException("Product cannot be deleted");
+            }
+        }else{
+            throw  new ProductException("product not found");
         }
     }
 
     @Override
     @Transactional
-    public Optional<ProductDTO> updateProduct(Long id, ProductDTO productDTO, MultipartFile[] photos) {
+    public ProductResponseDto updateProduct(Long id, ProductDTO productDTO, MultipartFile[] photos) {
         Optional<Product> productOptional = productRepository.findById(id);
         if(productOptional.isPresent()){
            Product existingProduct = productOptional.get();
@@ -165,33 +172,36 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setStatus(status);
             existingProduct.setProductPhotos(productPhoto);
            productRepository.save(existingProduct);
-           return Optional.of(productDTOMapper.apply(existingProduct));
+           return productResponseDTOMapper.toDto(existingProduct);
         }else {
-            return Optional.empty();
+            throw new ProductException("product not found");
         }
     }
 
     @Override
-    public Optional<ProductDTO> getProductById(Long id) {
+    public ProductResponseDto getProductById(Long id) {
         Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
-            return Optional.of(productDTOMapper.apply(product.get()));
+            return productResponseDTOMapper.toDto(product.get());
         }else {
-            return Optional.empty();
+            throw new ProductException("product Id not found " + id);
         }
     }
 
     @Override
-    public Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material) {
+    public Page<ProductResponseDto> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material, String name) {
         ProductSearchRequest searchRequest = new ProductSearchRequest();
         List<Category> cats  = new ArrayList<Category>();
-        for(Long categoryId : categoryIds){
-            Optional<Category> catOptional = categoryRepo.findById(categoryId);
-            if(catOptional.isPresent()){
-                Category category = catOptional.get();
-                cats.add(category);
+        if(categoryIds != null){
+            for(Long categoryId : categoryIds){
+                Optional<Category> catOptional = categoryRepo.findById(categoryId);
+                if(catOptional.isPresent()){
+                    Category category = catOptional.get();
+                    cats.add(category);
+                }
             }
         }
+
         searchRequest.setCategories(cats);
         searchRequest.setMinPrice(minPrice);
         searchRequest.setMaxPrice(maxPrice);
@@ -199,7 +209,8 @@ public class ProductServiceImpl implements ProductService {
         searchRequest.setNewArrival(newArrival);
         searchRequest.setColor(color);
         searchRequest.setMaterial(material);
-        return customProductRepository.searchProduct(searchRequest, pageable).map(productDTOMapper);
+        searchRequest.setName(name);
+        return customProductRepository.searchProduct(searchRequest, pageable).map(productResponseDTOMapper::toDto);
     }
 
     @Override
@@ -212,23 +223,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Optional<ProductDTO> setProductStatus(Long id, String status) {
+    public ProductResponseDto setProductStatus(Long id, ProductStatusUpdateDTO status) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product existingProduct = productOptional.get();
-            if (status.equalsIgnoreCase("approve")) {
-                existingProduct.setStatus(ProductStatusEnum.APPROVED);
-            } else if (status.equalsIgnoreCase("reject")) {
-                existingProduct.setStatus(ProductStatusEnum.REJECTED);
-            } else if (status.equalsIgnoreCase("delete")) {
-                existingProduct.setStatus(ProductStatusEnum.DELETE);
-            } else {
-                existingProduct.setStatus(ProductStatusEnum.IN_REVIEW);
-            }
+            existingProduct.setStatus(status.getStatus());
             productRepository.save(existingProduct);
-            return Optional.of(productDTOMapper.apply(existingProduct));
+            return productResponseDTOMapper.toDto(existingProduct);
         } else {
-            return Optional.empty();
+           throw new ProductException("product not found " + id);
+        }
+    }
+
+    @Override
+    public List<ProductResponseDto> getProductsBySellerId(Principal principal) {
+        String email = principal.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            List<Product> products = productRepository.findAllProductBySellerId(user.getId());
+
+            return products.stream().map(productResponseDTOMapper::toDto).collect(Collectors.toList());
+        } else {
+            throw new ProductException("Invalid Seller");
+
         }
     }
 

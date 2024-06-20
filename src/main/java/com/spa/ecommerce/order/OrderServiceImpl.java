@@ -37,8 +37,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ShoppingCartRepository shoppingCartRepository;
     @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
     private CartItemRepository cartItemRepository;
     @Autowired
     private ProductRepository productRepository;

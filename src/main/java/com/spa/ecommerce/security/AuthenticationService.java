@@ -5,7 +5,7 @@ import com.spa.ecommerce.resetpassword.ResetPasswordRepository;
 import com.spa.ecommerce.role.Role;
 import com.spa.ecommerce.role.RoleRepository;
 import com.spa.ecommerce.user.Buyer;
-import com.spa.ecommerce.user.Seller;
+import com.spa.ecommerce.seller.Seller;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
 import jakarta.transaction.Transactional;
