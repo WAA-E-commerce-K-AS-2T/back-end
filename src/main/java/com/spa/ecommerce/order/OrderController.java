@@ -56,4 +56,14 @@ public class OrderController {
 //    }
 
 
+    @PutMapping("/{buyerId}/cancel")
+    public Order cancelOrder(Principal principal, @PathVariable Long buyerId) {
+        return orderService.cancelOrder(principal, buyerId);
+    }
+
+    @PutMapping("/{buyerId}/status")
+    public Order updateOrderStatus(Principal principal, @PathVariable Long buyerId) {
+        return orderService.updateOrderStatus(principal, buyerId);
+    }
+
 }
