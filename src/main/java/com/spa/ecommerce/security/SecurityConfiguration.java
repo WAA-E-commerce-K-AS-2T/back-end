@@ -103,6 +103,8 @@ public class SecurityConfiguration {
                         //Order
                         .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX )
                         .hasAnyAuthority("order.read")
+                        .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX + "/*" )
+                        .hasAnyAuthority("order.read")
                         .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
                         .hasAnyAuthority("order.write")
                         .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
