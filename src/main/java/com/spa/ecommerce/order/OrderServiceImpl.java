@@ -2,15 +2,15 @@ package com.spa.ecommerce.order;
 
 import com.spa.ecommerce.order.dto.OrderDTO;
 import com.spa.ecommerce.order.dto.OrderDTOMapper;
-import com.spa.ecommerce.order.orderitem.ItemRepository;
 import com.spa.ecommerce.order.orderitem.OrderItem;
-import com.spa.ecommerce.order.orderitem.dto.OrderItemDTOMapper;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.ProductRepository;
+import com.spa.ecommerce.role.Role;
 import com.spa.ecommerce.shoppingcart.CartItem.entity.CartItem;
 import com.spa.ecommerce.shoppingcart.CartItem.repository.CartItemRepository;
 import com.spa.ecommerce.shoppingcart.ShoppingCart;
 import com.spa.ecommerce.shoppingcart.ShoppingCartRepository;
+import com.spa.ecommerce.user.SellerRepository;
 import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
     private CartItemRepository cartItemRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    SellerRepository sellerRepository;
 
     @Transactional
     public OrderDTO placeOrder(Principal principal, OrderDTO orderDTO) {
@@ -122,4 +125,108 @@ public class OrderServiceImpl implements OrderService {
         }
         return null;
     }
-}
+
+
+    @Override
+    public Order cancelOrder(Principal principal, long orderId) {
+        String email = principal.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Collection<Role> roles = user.getRoles();
+
+            for (Role role : roles) {
+                if ("ROLE_BUYER".equals(role.getName())) {
+                    List<Order> orders = orderRepository.findByBuyerId(user.getId());
+
+                    Order order = orders.stream()
+                            .filter(o -> o.getId().equals(orderId))
+                            .findFirst()
+                            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+                    if (order.getStatus() == Status.PROCESSING || order.getStatus() == Status.PENDING) {
+                        order.setStatus(Status.CANCELLED);
+                        return orderRepository.save(order);
+                    } else {
+                        throw new RuntimeException("Order cannot be cancelled");
+                    }
+
+                }
+                else if ("ROLE_SELLER".equals(role.getName())) {
+
+                    Optional<List<OrderItem>> optionalOrderItems = sellerRepository.findOrderItemsByUserId(user.getId());
+                    if (!optionalOrderItems.isPresent()) {
+                        throw new RuntimeException("No order items found for the user");
+                    }
+
+                    List<OrderItem> orderItems = optionalOrderItems.get();
+
+                    // Find and update the order item
+                    OrderItem orderItem = orderItems.stream()
+                            .filter(oi -> oi.getOrder().getId().equals(orderId))
+                            .findFirst()
+                            .orElseThrow(() -> new RuntimeException("Order item not found"));
+
+                    Order order = orderItem.getOrder();
+                    if (order.getStatus() == Status.PROCESSING || order.getStatus() == Status.PENDING) {
+                        order.setStatus(Status.CANCELLED);
+                        orderRepository.save(order);
+                        return order;
+                    } else {
+                        throw new RuntimeException("Order cannot be cancelled");
+                    }
+                }
+
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Order updateOrderStatus(Principal principal, long orderId) {
+        String email = principal.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Collection<Role> roles = user.getRoles();
+
+            for (Role role : roles) {
+                if ("ROLE_SELLER".equals(role.getName())) {
+                    Optional<List<OrderItem>> optionalOrderItems = sellerRepository.findOrderItemsByUserId(user.getId());
+
+                    if (optionalOrderItems.isPresent()) {
+                        List<OrderItem> orderItems = optionalOrderItems.get();
+
+                        Order order = orderItems.stream()
+                                .map(OrderItem::getOrder)
+                                .filter(o -> o.getId().equals(orderId))
+                                .findFirst()
+                                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+                        if (order.getStatus() == Status.PENDING) {
+                            order.setStatus(Status.PROCESSING);
+                        } else if (order.getStatus() == Status.PROCESSING) {
+                            order.setStatus(Status.SHIPPED);
+                        } else if (order.getStatus() == Status.SHIPPED) {
+                            order.setStatus(Status.DELIVERED);
+                        } else {
+                            throw new RuntimeException("Order status cannot be updated");
+                        }
+
+                        return orderRepository.save(order);
+                    } else {
+                        throw new RuntimeException("No order items found for the user");
+                    }
+                } else {
+                    throw new RuntimeException("User not found");
+                }
+            }
+        }
+            return null;
+
+
+
+        }
+    }
+

@@ -11,4 +11,11 @@ public interface OrderService {
     public OrderDTO findById(long id);
 //    public Optional<OrderDTO> update(long orderId, Status status);
     public OrderDTO placeOrder(Principal principal, OrderDTO orderDTO);
+
+
+
+
+    Order cancelOrder(Principal principal, long orderId);
+
+    Order updateOrderStatus(Principal principal, long orderId);
 }
