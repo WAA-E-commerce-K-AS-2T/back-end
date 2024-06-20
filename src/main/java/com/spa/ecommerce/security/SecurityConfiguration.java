@@ -49,12 +49,21 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/login", "/signup", "/logout", "/reset-password/**").permitAll()
 
+                        //Categroy
                         .requestMatchers(HttpMethod.GET, Constant.CATEGORY_URL_PREFIX)
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, Constant.CATEGORY_URL_PREFIX)
+                        .hasAnyAuthority("category.read")
+                        .requestMatchers(HttpMethod.POST, Constant.CATEGORY_URL_PREFIX)
+                        .hasAnyAuthority("category.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.CATEGORY_URL_PREFIX)
+                        .hasAnyAuthority("category.write")
+                        .requestMatchers(HttpMethod.DELETE, Constant.CATEGORY_URL_PREFIX)
+                        .hasAnyAuthority("category.delete")
 
+                        //Product
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX)
                         .permitAll()
-
 //                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX )
 //                        .hasAnyAuthority("product.read")
                         .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX )
@@ -65,6 +74,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("product.delete")
 
+                        // If the seller registers to the web site, he/she needs to get approval from Admin in order to post products.
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/*/set-status" )
+                        .hasAnyAuthority("product.approval")
+
+                        //Revoiews
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX+ "/*/reviews" )
                         .permitAll()
                         //.hasAnyAuthority("review.read")
@@ -78,6 +92,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/*/reviews/*" )
                         .hasAnyAuthority("review.delete")
 
+                        //Shopping cart
                         .requestMatchers(HttpMethod.GET, Constant.SHOPPINGCART_URL_PREFIX )
                         .hasAnyAuthority("shoppingcart.read")
                         .requestMatchers(HttpMethod.POST, Constant.SHOPPINGCART_URL_PREFIX )
@@ -88,6 +103,7 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("shoppingcart.delete")
 
 
+                        //Order
                         .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX )
                         .hasAnyAuthority("order.read")
                         .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
@@ -104,7 +120,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*/status" )
                         .hasAnyAuthority("order.status")
 
-
+                        // Order
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_USER_URL_PREFIX )
                         .hasAnyAuthority("users.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_USER_URL_PREFIX )
@@ -117,7 +133,7 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("users.delete")
 
 
-
+                        // Role
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_ROLE_URL_PREFIX )
                         .hasAnyAuthority("roles.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_ROLE_URL_PREFIX )
@@ -127,6 +143,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_ROLE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("roles.delete")
 
+                        // Privilege
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_PTIVILEGE_URL_PREFIX )
                         .hasAnyAuthority("privileges.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_PTIVILEGE_URL_PREFIX )
@@ -136,14 +153,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("privileges.delete")
 
+                        // Profile
                         .requestMatchers(HttpMethod.GET, "/api/v1/profile" )
                         .hasAnyAuthority("profile.read")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/profile" )
                         .hasAnyAuthority("profile.write")
-
-                        // If the seller registers to the web site, he/she needs to get approval from Admin in order to post products.
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/*/set-status" )
-                        .hasAnyAuthority("product.approval")
 
 
 
