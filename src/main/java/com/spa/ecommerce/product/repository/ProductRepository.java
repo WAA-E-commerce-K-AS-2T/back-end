@@ -21,4 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query("SELECT p FROM Product p WHERE p.seller.id = :sellerId")
     List<Product> findAllProductBySellerId(@Param("sellerId") Long sellerId);
+
+    @Query("SELECT p FROM Product p JOIN p.reviews r WHERE r.id = : reviewId")
+    Product findByReviewId(@Param("reviewId") Long reviewId);
 }
