@@ -107,6 +107,17 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_PTIVILEGE_URL_PREFIX+"/*" )
                         .hasAnyAuthority("privileges.delete")
 
+                        .requestMatchers(HttpMethod.GET, "/api/v1/profile" )
+                        .hasAnyAuthority("profile.read")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/profile" )
+                        .hasAnyAuthority("profile.write")
+
+                        // If the seller registers to the web site, he/she needs to get approval from Admin in order to post products.
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/*/set-status" )
+                        .hasAnyAuthority("product.approval")
+
+
+
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

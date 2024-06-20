@@ -1,5 +1,7 @@
 package com.spa.ecommerce.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
@@ -55,6 +57,7 @@ public class Product {
     private List<ProductPhoto> productPhotos = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Review> reviews;
 
     private int timesBought;

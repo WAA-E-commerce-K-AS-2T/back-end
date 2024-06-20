@@ -68,9 +68,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
-            filterChain.doFilter(request, response);
         } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+            //handlerExceptionResolver.resolveException(request, response, null, exception);
+            // Handle expired JWT here
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("JWT has expired");
+            response.getWriter().flush();
+            return;
         }
+        filterChain.doFilter(request, response);
     }
 }

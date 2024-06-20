@@ -21,12 +21,12 @@ public class ReviewController {
 
     @GetMapping
     public ResponseEntity<Collection<ReviewDTO>> getAllReviews() {
-        return new ResponseEntity<>(reviewService.getAll(), HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.getAllReviews(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReviewDTO> getReview(@PathVariable("id") Long id) {
-        return reviewService.get(id)
+        return reviewService.getReviewById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -47,8 +47,8 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
-        Optional<ReviewDTO> deletedReviewOpt = reviewService.delete(id, reviewDTO);
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long id) {
+        Optional<ReviewDTO> deletedReviewOpt = reviewService.delete(id);
         return deletedReviewOpt
                 .map(deletedReview -> new ResponseEntity<>(deletedReview, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
