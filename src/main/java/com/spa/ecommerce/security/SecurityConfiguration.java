@@ -64,7 +64,7 @@ public class SecurityConfiguration {
                         //Product
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX)
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX + "/*" )
+                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX+"/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("product.write")
@@ -105,6 +105,12 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("order.read")
                         .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX + "/*" )
                         .hasAnyAuthority("order.read")
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/seller/orderItems" )
+                        .hasAnyAuthority("order.read")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/seller/orderItems/*" )
+
+                        .hasAnyAuthority("order.read")
                         .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
                         .hasAnyAuthority("order.write")
                         .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
@@ -119,7 +125,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*/status" )
                         .hasAnyAuthority("order.status")
 
-                        // Order
+                        // User
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_USER_URL_PREFIX )
                         .hasAnyAuthority("users.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_USER_URL_PREFIX )
