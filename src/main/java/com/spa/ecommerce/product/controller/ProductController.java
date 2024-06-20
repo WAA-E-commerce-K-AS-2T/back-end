@@ -56,9 +56,8 @@ public class ProductController {
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<ProductDTO> deleteProductById(@PathVariable Long productId) {
-        return  productService.deleteById(productId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
+        ProductDTO dto =   productService.deleteById(productId);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/filter")
@@ -69,9 +68,10 @@ public class ProductController {
                                                           @RequestParam(name = "newArrival", required = false) Boolean newArrival,
                                                           @RequestParam(name = "color", required = false) String color,
                                                           @RequestParam(name = "material", required = false) String material,
+                                                          @RequestParam(name = "name", required = false) String name,
                                                           Pageable pageable
                                                           ){
-        return new ResponseEntity<>(productService.filterProducts(pageable, categories, minPrice, maxPrice, brand, newArrival, color, material), HttpStatus.OK);
+        return new ResponseEntity<>(productService.filterProducts(pageable, categories, minPrice, maxPrice, brand, newArrival, color, material,name), HttpStatus.OK);
     }
 
     @GetMapping("/{productId}/reviews")

@@ -87,6 +87,7 @@ VALUES
 INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_modified_date, email, full_name, password) VALUES (true, null, '2024-06-18 15:20:56.203965', 1, null, '2024-06-18 15:20:56.203965', 'admin@example.com', 'admin', '$2a$10$NKfxB1euNxnPG7.0T2S0k.jTKSGu7uhMMoTaKn4zMMhJbxhReONAa');
 INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_modified_date, email, full_name, password) VALUES (true, null, '2024-06-18 15:21:00.019446', 2, null, '2024-06-18 15:21:00.019446', 'buyer@example.com', 'buyer', '$2a$10$2bgbBoiM1oGeHnL0awJ4LedVEBw35Cym/x2M8exBz7W36qbL3L.fK');
 INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_modified_date, email, full_name, password) VALUES (true, null, '2024-06-18 15:20:56.203965', 3, null, '2024-06-18 15:20:56.203965', 'seller@example.com', 'seller', '$2a$10$NKfxB1euNxnPG7.0T2S0k.jTKSGu7uhMMoTaKn4zMMhJbxhReONAa');
+INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_modified_date, email, full_name, password) VALUES (true, null, '2024-06-18 15:20:56.203965', 4, null, '2024-06-18 15:20:56.203965', 'seller1@example.com', 'seller', '$2a$10$NKfxB1euNxnPG7.0T2S0k.jTKSGu7uhMMoTaKn4zMMhJbxhReONAa');
 
 INSERT INTO seller (id) VALUES (3);
 INSERT INTO buyer (id) VALUES (2);
@@ -94,4 +95,14 @@ INSERT INTO buyer (id) VALUES (2);
 INSERT INTO users_roles (id, role_id, user_id) VALUES (1, 1, 1);
 INSERT INTO users_roles (id, role_id, user_id) VALUES (2, 4, 2);
 INSERT INTO users_roles (id, role_id, user_id) VALUES (3, 3, 3);
+INSERT INTO users_roles (id, role_id, user_id) VALUES (4, 3, 4);
+
+INSERT INTO product (id, name, description, price, brand, product_size, color, material, status, in_stock, posted_date, seller_id, times_bought)
+VALUES
+    (1, 'Sketchers', 'A shoe', 200, 'Sketchers', 'L', 'Red', 'Cotton', 'APPROVED', 100, '2023-06-01', 3, 0),
+    (2, 'Product 2', 'Description for Product 2', 29.99, 'Brand B', 'M', 'Blue', 'Polyester', 'IN_REVIEW', 150, '2023-06-02', 3, 0);
+(3, 'Product 2', 'Description for Product 2', 29.99, 'Brand B', 'M', 'Blue', 'Polyester', 'IN_REVIEW', 150, '2023-06-02', 4, 0);
+
+INSERT INTO product_photo (id, name, image_url, image_id, product_id) VALUES (1, 'sketchers-women-black', 'http://res.cloudinary.com/dmyuqmm5o/image/upload/v1718846676/v17hahycwvenzrz0tfcf.png', 'v17hahycwvenzrz0tfcf', 1),
+
 

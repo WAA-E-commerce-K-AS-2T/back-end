@@ -21,6 +21,8 @@ import java.util.Optional;
 public class SellerController {
 
     private final UserService userService;
+    private final ProductService productService;
+
     @GetMapping("/orderItems")
     public ResponseEntity<Optional<List<OrderItemDTO>>> getOrderItems(Principal principal) {
         Optional<List<OrderItemDTO>> items =  userService.getOrderItemsForSeller(principal);
@@ -30,6 +32,13 @@ public class SellerController {
             return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductDTO>> getProducts(Principal principal) {
+        List<ProductDTO> dto = productService.getProductsBySellerId(principal);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
 
 
 

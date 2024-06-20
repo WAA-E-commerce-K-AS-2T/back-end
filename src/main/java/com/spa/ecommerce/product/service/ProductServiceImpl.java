@@ -3,6 +3,7 @@ package com.spa.ecommerce.product.service;
 import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.category.CategoryRepo;
 import com.spa.ecommerce.common.ProductStatusEnum;
+import com.spa.ecommerce.exception.ProductException;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductDTOMapper;
 import com.spa.ecommerce.product.dto.ProductSearchRequest;
@@ -98,13 +99,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDTO> deleteById(Long id) {
+    public ProductDTO deleteById(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        if(product.isPresent()){
-            productRepository.deleteById(id);
-            return Optional.of(productDTOMapper.apply(product.get()));
-        }else {
-            return Optional.empty();
+        if (product.isPresent()) {
+            Product product1 = product.get();
+            if (product1.getTimesBought() == 0) {
+                productRepository.deleteById(id);
+                return productDTOMapper.apply(product1);
+            } else {
+                throw new ProductException("Product cannot be deleted");
+            }
+        }else{
+            throw  new ProductException("product not found");
         }
     }
 
@@ -185,16 +191,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material) {
+    public Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material, String name) {
         ProductSearchRequest searchRequest = new ProductSearchRequest();
         List<Category> cats  = new ArrayList<Category>();
-        for(Long categoryId : categoryIds){
-            Optional<Category> catOptional = categoryRepo.findById(categoryId);
-            if(catOptional.isPresent()){
-                Category category = catOptional.get();
-                cats.add(category);
+        if(categoryIds != null){
+            for(Long categoryId : categoryIds){
+                Optional<Category> catOptional = categoryRepo.findById(categoryId);
+                if(catOptional.isPresent()){
+                    Category category = catOptional.get();
+                    cats.add(category);
+                }
             }
         }
+
         searchRequest.setCategories(cats);
         searchRequest.setMinPrice(minPrice);
         searchRequest.setMaxPrice(maxPrice);
@@ -202,6 +211,7 @@ public class ProductServiceImpl implements ProductService {
         searchRequest.setNewArrival(newArrival);
         searchRequest.setColor(color);
         searchRequest.setMaterial(material);
+        searchRequest.setName(name);
         return customProductRepository.searchProduct(searchRequest, pageable).map(productDTOMapper);
     }
 
@@ -224,6 +234,20 @@ public class ProductServiceImpl implements ProductService {
             return Optional.of(productDTOMapper.apply(existingProduct));
         } else {
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<ProductDTO> getProductsBySellerId(Principal principal) {
+        String email = principal.getName();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            List<Product> products = productRepository.findAllProductBySellerId(user.getId());
+            System.out.println("---------------");
+            return products.stream().map(productDTOMapper).collect(Collectors.toList());
+        } else {
+            throw new ProductException("Invalid Seller");
         }
     }
 
