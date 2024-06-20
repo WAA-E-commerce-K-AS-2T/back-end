@@ -64,11 +64,8 @@ public class SecurityConfiguration {
                         //Product
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX)
                         .permitAll()
-//                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX )
-//                        .hasAnyAuthority("product.read")
-                        .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX )
+                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX + "/*" )
                         .permitAll()
-                        //.hasAnyAuthority("product.write")
                         .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("product.write")
                         .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/*" )
