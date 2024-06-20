@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -16,4 +18,8 @@ public class ReviewDTO {
     private String comment;
 
     private Long productId;
+
+    private LocalDateTime createdDate;
+    private String createdBy;
+
 }
