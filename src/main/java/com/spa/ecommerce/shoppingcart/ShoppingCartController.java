@@ -43,6 +43,12 @@ public class ShoppingCartController {
         ShoppingCartDTO cart = shoppingCartService.clearCart(principal);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<ShoppingCartDTO> getShoppingCart(Principal principal) {
+        ShoppingCartDTO shoppingCartDTO = shoppingCartService.getShoppingCart(principal);
+        return new ResponseEntity<>(shoppingCartDTO, HttpStatus.OK);
+    }
 }
 
 

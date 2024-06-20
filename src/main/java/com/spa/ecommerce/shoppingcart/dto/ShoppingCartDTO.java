@@ -15,5 +15,6 @@ public class ShoppingCartDTO {
     private long id;
     private List<CartItemDTO> items;
     private double totalPrice;
+    private int totalItems;
 
 }
