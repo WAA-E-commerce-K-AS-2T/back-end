@@ -15,7 +15,7 @@ public interface OrderService {
 
 
 
-    Order cancelOrder(Principal principal, long orderId);
+    OrderDTO cancelOrder(Principal principal, long orderId);
 
-    Order updateOrderStatus(Principal principal, long orderId);
+    OrderDTO updateOrderStatus(Principal principal, long orderId);
 }
