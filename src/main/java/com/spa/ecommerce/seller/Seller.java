@@ -1,7 +1,8 @@
-package com.spa.ecommerce.user;
+package com.spa.ecommerce.seller;
 
 import com.spa.ecommerce.order.orderitem.OrderItem;
 import com.spa.ecommerce.product.entity.Product;
+import com.spa.ecommerce.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Seller extends User{
+public class Seller extends User {
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<Product> products;
 

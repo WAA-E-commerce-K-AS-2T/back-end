@@ -1,4 +1,4 @@
-package com.spa.ecommerce.user.controller;
+package com.spa.ecommerce.seller;
 
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;

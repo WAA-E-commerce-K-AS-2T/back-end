@@ -2,7 +2,6 @@ package com.spa.ecommerce.seller;
 
 import com.spa.ecommerce.role.RoleDTO;
 import com.spa.ecommerce.role.RoleDTOMapper;
-import com.spa.ecommerce.user.Seller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

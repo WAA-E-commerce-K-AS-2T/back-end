@@ -1,14 +1,10 @@
 package com.spa.ecommerce.profile;
 
 
-import com.spa.ecommerce.user.Buyer;
-import com.spa.ecommerce.user.Seller;
-import com.spa.ecommerce.user.User;
 import com.spa.ecommerce.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
