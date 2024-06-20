@@ -2,6 +2,7 @@ package com.spa.ecommerce.user;
 
 import com.spa.ecommerce.address.Address;
 import com.spa.ecommerce.address.AddressRepository;
+import com.spa.ecommerce.buyer.BuyerDTO;
 import com.spa.ecommerce.buyer.BuyerDTOMapper;
 import com.spa.ecommerce.buyer.BuyerRepository;
 import com.spa.ecommerce.order.orderitem.OrderItem;
@@ -9,6 +10,7 @@ import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTOMapper;
 import com.spa.ecommerce.profile.ProfileDTO;
 import com.spa.ecommerce.seller.Seller;
+import com.spa.ecommerce.seller.SellerDTO;
 import com.spa.ecommerce.seller.SellerDTOMapper;
 import com.spa.ecommerce.seller.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,18 +139,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<?> getCurrentUser(Principal principal) {
-        Optional<Seller> seller = sellerRepository.findByEmail(principal.getName());
-        if (seller.isPresent()) {
-            return Optional.of(sellerDTOMapper.apply(seller.get()));
-        } else {
-            Optional<Buyer> buyer = buyerRepository.findByEmail(principal.getName());
-            if (buyer.isPresent()) {
-                return Optional.of(buyerDTOMapper.apply(buyer.get()));
-            } else {
-                return Optional.empty();
-            }
-        }
+    public Optional<UserWrapper> getCurrentUser(Principal principal) {
+        String email = principal.getName();
+        return sellerRepository.findByEmail(email)
+                .map(seller -> new UserWrapper(sellerDTOMapper.apply(seller)))
+                .or(() -> buyerRepository.findByEmail(email)
+                        .map(buyer -> new UserWrapper(buyerDTOMapper.apply(buyer))));
     }
 
     @Override

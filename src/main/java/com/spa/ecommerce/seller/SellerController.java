@@ -3,6 +3,7 @@ package com.spa.ecommerce.seller;
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 import com.spa.ecommerce.product.dto.ProductDTO;
+import com.spa.ecommerce.product.dto.ProductResponseDto;
 import com.spa.ecommerce.product.service.ProductService;
 import com.spa.ecommerce.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,8 @@ public class SellerController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDTO>> getProducts(Principal principal) {
-        List<ProductDTO> dto = productService.getProductsBySellerId(principal);
+    public ResponseEntity<List<ProductResponseDto>> getProducts(Principal principal) {
+        List<ProductResponseDto> dto = productService.getProductsBySellerId(principal);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

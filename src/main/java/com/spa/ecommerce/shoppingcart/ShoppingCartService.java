@@ -14,4 +14,5 @@ public interface ShoppingCartService {
     ShoppingCartDTO removeItemFromCart(Principal principal, Long productId);
     ShoppingCartDTO removeWholeCartItem(Principal principal, Long cartItemId);
     ShoppingCartDTO clearCart(Principal principal);
+    ShoppingCartDTO getShoppingCart(Principal principal);
 }

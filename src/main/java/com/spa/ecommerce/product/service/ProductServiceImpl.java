@@ -4,10 +4,7 @@ import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.category.CategoryRepo;
 import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.exception.ProductException;
-import com.spa.ecommerce.product.dto.ProductDTO;
-import com.spa.ecommerce.product.dto.ProductDTOMapper;
-import com.spa.ecommerce.product.dto.ProductSearchRequest;
-import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
+import com.spa.ecommerce.product.dto.*;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.CustomProductRepository;
 import com.spa.ecommerce.product.repository.ProductRepository;
@@ -48,9 +45,10 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
     private final CategoryRepo categoryRepo;
     private final ReviewDTOMapper reviewDTOMapper;
+    private final ProductResponseDTOMapper productResponseDTOMapper;
 
     @Override
-    public Optional<ProductDTO> saveProduct(Principal principal, ProductDTO productDTO, MultipartFile[] photos) {
+    public ProductResponseDto saveProduct(Principal principal, ProductDTO productDTO, MultipartFile[] photos) {
         String email = principal.getName();
         Optional<User> OptUser = userRepository.findByEmail(email);
         if(OptUser.isPresent()){
@@ -70,7 +68,6 @@ public class ProductServiceImpl implements ProductService {
             product.setTimesBought(0);
             product.setSeller(user);
             product.setCategories(productCategories);
-
             product.setPostedDate(LocalDate.now());
 
             for(MultipartFile photo: photos){
@@ -86,26 +83,26 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
             }
-            productRepository.save(product);
-            return Optional.of(productDTOMapper.apply(product));
-        } else{
-            return Optional.empty();
+            Product p = productRepository.save(product);
+            return productResponseDTOMapper.toDto(p);
+        }else{
+            throw new ProductException("Token not found");
         }
     }
 
     @Override
-    public Page<ProductDTO> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productDTOMapper);
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productResponseDTOMapper::toDto);
     }
 
     @Override
-    public ProductDTO deleteById(Long id) {
+    public ProductResponseDto deleteById(Long id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
             Product product1 = product.get();
             if (product1.getTimesBought() == 0) {
                 productRepository.deleteById(id);
-                return productDTOMapper.apply(product1);
+                return productResponseDTOMapper.toDto(product1);
             } else {
                 throw new ProductException("Product cannot be deleted");
             }
@@ -116,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Optional<ProductDTO> updateProduct(Long id, ProductDTO productDTO, MultipartFile[] photos) {
+    public ProductResponseDto updateProduct(Long id, ProductDTO productDTO, MultipartFile[] photos) {
         Optional<Product> productOptional = productRepository.findById(id);
         if(productOptional.isPresent()){
            Product existingProduct = productOptional.get();
@@ -174,24 +171,24 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setStatus(status);
             existingProduct.setProductPhotos(productPhoto);
            productRepository.save(existingProduct);
-           return Optional.of(productDTOMapper.apply(existingProduct));
+           return productResponseDTOMapper.toDto(existingProduct);
         }else {
-            return Optional.empty();
+            throw new ProductException("product not found");
         }
     }
 
     @Override
-    public Optional<ProductDTO> getProductById(Long id) {
+    public ProductResponseDto getProductById(Long id) {
         Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
-            return Optional.of(productDTOMapper.apply(product.get()));
+            return productResponseDTOMapper.toDto(product.get());
         }else {
-            return Optional.empty();
+            throw new ProductException("product Id not found " + id);
         }
     }
 
     @Override
-    public Page<ProductDTO> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material, String name) {
+    public Page<ProductResponseDto> filterProducts(Pageable pageable, List<Long> categoryIds, Double minPrice, Double maxPrice, String brand, Boolean newArrival, String color, String material, String name) {
         ProductSearchRequest searchRequest = new ProductSearchRequest();
         List<Category> cats  = new ArrayList<Category>();
         if(categoryIds != null){
@@ -212,7 +209,7 @@ public class ProductServiceImpl implements ProductService {
         searchRequest.setColor(color);
         searchRequest.setMaterial(material);
         searchRequest.setName(name);
-        return customProductRepository.searchProduct(searchRequest, pageable).map(productDTOMapper);
+        return customProductRepository.searchProduct(searchRequest, pageable).map(productResponseDTOMapper::toDto);
     }
 
     @Override
@@ -225,29 +222,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Optional<ProductDTO> setProductStatus(Long id, ProductStatusUpdateDTO status) {
+    public ProductResponseDto setProductStatus(Long id, ProductStatusUpdateDTO status) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product existingProduct = productOptional.get();
             existingProduct.setStatus(status.getStatus());
             productRepository.save(existingProduct);
-            return Optional.of(productDTOMapper.apply(existingProduct));
+            return productResponseDTOMapper.toDto(existingProduct);
         } else {
-            return Optional.empty();
+           throw new ProductException("product not found " + id);
         }
     }
 
     @Override
-    public List<ProductDTO> getProductsBySellerId(Principal principal) {
+    public List<ProductResponseDto> getProductsBySellerId(Principal principal) {
         String email = principal.getName();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if(userOptional.isPresent()){
             User user = userOptional.get();
             List<Product> products = productRepository.findAllProductBySellerId(user.getId());
-            System.out.println("---------------");
-            return products.stream().map(productDTOMapper).collect(Collectors.toList());
+
+            return products.stream().map(productResponseDTOMapper::toDto).collect(Collectors.toList());
         } else {
             throw new ProductException("Invalid Seller");
+
         }
     }
 

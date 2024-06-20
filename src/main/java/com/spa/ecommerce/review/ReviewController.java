@@ -31,20 +31,6 @@ public class ReviewController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping
-    public ResponseEntity<ReviewDTO> saveReview(@RequestBody ReviewDTO reviewDTO) {
-        Optional<ReviewDTO> savedReview = reviewService.save(reviewDTO);
-        return savedReview.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
-        Optional<ReviewDTO> updatedReviewOpt = reviewService.update(id, reviewDTO);
-        return updatedReviewOpt
-                .map(updatedReview -> new ResponseEntity<>(updatedReview, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long id) {

@@ -2,6 +2,7 @@ package com.spa.ecommerce.shoppingcart.CartItem.dto;
 
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.repository.ProductRepository;
+import com.spa.ecommerce.productPhoto.entity.ProductPhoto;
 import com.spa.ecommerce.shoppingcart.CartItem.entity.CartItem;
 import com.spa.ecommerce.shoppingcart.ShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,14 @@ public class CartItemDTOMapper {
     }
 
     public CartItemDTO toDTO(CartItem entity) {
+        String photo = entity.getProduct().getProductPhotos().get(0).getImageUrl();
         CartItemDTO dto = new CartItemDTO();
         dto.setId(entity.getId());
         dto.setProductId(entity.getProduct().getId());
         dto.setQuantity(entity.getQuantity());
         dto.setPrice(entity.getPrice());
+        dto.setImageUrl(photo);
+        dto.setName(entity.getProduct().getName());
         return dto;
     }
 }
