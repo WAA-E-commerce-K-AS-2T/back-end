@@ -74,7 +74,8 @@ VALUES (1,1),
        (26,1),
        (27,1),
        (28,1),
-       (29,1);
+       (29,1),
+       (35,1);
 
 INSERT INTO roles_privileges (privilege_id, role_id)
 VALUES (13, 3),(14, 3),(15, 3),(16, 3),(17, 3),(18, 3),(19, 3)
