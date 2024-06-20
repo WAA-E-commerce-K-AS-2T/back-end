@@ -95,11 +95,19 @@ INSERT INTO users_roles (id, role_id, user_id) VALUES (3, 3, 3);
 INSERT INTO users_roles (id, role_id, user_id) VALUES (4, 3, 4);
 
 INSERT INTO product (id, name, description, price, brand, product_size, color, material, status, in_stock, posted_date, seller_id, times_bought)
-VALUES
-    (1, 'Sketchers', 'A shoe', 200, 'Sketchers', 'L', 'Red', 'Cotton', 'APPROVED', 100, '2023-06-01', 3, 0),
-    (2, 'Product 2', 'Description for Product 2', 29.99, 'Brand B', 'M', 'Blue', 'Polyester', 'IN_REVIEW', 150, '2023-06-02', 3, 0);
-(3, 'Product 2', 'Description for Product 2', 29.99, 'Brand B', 'M', 'Blue', 'Polyester', 'IN_REVIEW', 150, '2023-06-02', 4, 0);
+VALUES(1, 'Product 1', 'Description for Product 1', 19.99, 'Brand A', 'L', 'Red', 'Cotton', 'IN_REVIEW', 100, '2023-06-01', 3, 0);
 
-INSERT INTO product_photo (id, name, image_url, image_id, product_id) VALUES (1, 'sketchers-women-black', 'http://res.cloudinary.com/dmyuqmm5o/image/upload/v1718846676/v17hahycwvenzrz0tfcf.png', 'v17hahycwvenzrz0tfcf', 1),
+
+INSERT INTO product_photo (id, name, image_url, image_id, product_id) VALUES (1, 'sketchers-women-black', 'http://res.cloudinary.com/dmyuqmm5o/image/upload/v1718846676/v17hahycwvenzrz0tfcf.png', 'v17hahycwvenzrz0tfcf', 1);
+
+INSERT INTO category (id, name, parent_id) VALUES (1, 'Electronics', null);
+INSERT INTO category (id, name, parent_id) VALUES (2, 'Clothing', null);
+INSERT INTO category (id, name, parent_id) VALUES (3, 'Books', null);
+INSERT INTO category (id, name, parent_id) VALUES (4, 'Laptop', 1);
+INSERT INTO category (id, name, parent_id) VALUES (5, 'Iphone', 1);
+INSERT INTO category (id, name, parent_id) VALUES (6, 'Fiction',2);
+
+INSERT INTO product_category (product_id, category_id) VALUES (1, 1);
+INSERT INTO product_category (product_id, category_id) VALUES (1, 4);
 
 
