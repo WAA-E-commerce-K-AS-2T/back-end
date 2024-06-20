@@ -42,6 +42,7 @@ VALUES ('users.read'),
        ('shoppingcart.delete'),
        ('profile.read'),
        ('profile.write'),
+       ('product.approval'),
        ('none.');
 
 INSERT INTO roles_privileges (privilege_id, role_id)

@@ -136,35 +136,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateUser(Principal principal, ProfileDTO profileDTO) {
+    public String updateUser(Long id, ProfileDTO profileDTO) {
         //return Optional.of("test");
-        Optional<Seller> seller = sellerRepository.findByEmail(principal.getName());
+        Optional<Seller> seller = sellerRepository.findById(id);
         if (seller.isPresent()) {
             return "Your Account has been changed";
         } else {
-            Optional<Buyer> buyer = buyerRepository.findByEmail(principal.getName());
+            Optional<Buyer> buyer = buyerRepository.findById(id);
             if (buyer.isPresent()) {
-//                Buyer saveObj = buyer.get();
-//
-//                saveObj.setFullName(profileDTO.getFullname());
+                Buyer saveObj = buyer.get();
+                saveObj.setFullName(profileDTO.getFullname());
 
                 //if(saveObj.getAddress() == null) {
                     Address address = new Address();
 
                     //address.setId(profileDTO.getAddress().getId());
-                    address.setAddress1("test");
-                    //address.setAddress2(profileDTO.getAddress().getAddress2());
-                    //address.setAddress3(profileDTO.getAddress().getAddress3());
-                    //address.setAddress4(profileDTO.getAddress().getAddress4());
-                    //address.setCity(profileDTO.getAddress().getCity());
-                    //address.setState(profileDTO.getAddress().getState());
-                    //address.setZipcode(profileDTO.getAddress().getZipcode());
-                    //address.setPincode(profileDTO.getAddress().getPincode());
+                    address.setAddress1(profileDTO.getAddress().getAddress1());
+                    address.setAddress2(profileDTO.getAddress().getAddress2());
+                    address.setAddress3(profileDTO.getAddress().getAddress3());
+                    address.setAddress4(profileDTO.getAddress().getAddress4());
+                    address.setCity(profileDTO.getAddress().getCity());
+                    address.setState(profileDTO.getAddress().getState());
+                    address.setZipcode(profileDTO.getAddress().getZipcode());
+                    address.setPincode(profileDTO.getAddress().getPincode());
 
                     address = addressRepository.save(address);
-                    //saveObj.setAddress(address);
+                    saveObj.setAddress(address);
                 //}
-//                buyerRepository.save(saveObj);
+                buyerRepository.save(saveObj);
                 System.out.println("asdfasdfas");
                 return "Your Account has been changed";
             } else {

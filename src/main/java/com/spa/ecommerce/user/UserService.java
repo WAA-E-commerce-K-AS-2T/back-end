@@ -13,7 +13,7 @@ public interface UserService extends GeneralService<UserDTO, Long> {
 
     Optional<?> getCurrentUser(Principal principal);
 
-    String updateUser(Principal principal, ProfileDTO profileDTO);
+    String updateUser(Long id, ProfileDTO profileDTO);
 
     //Optional<String> resetPassword(Long id, ResetPasswordDTO resetPassword);
 }

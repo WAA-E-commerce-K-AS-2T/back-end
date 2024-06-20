@@ -28,9 +28,9 @@ public class ProfileController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateProfile(Principal principal, @RequestBody ProfileDTO profileDTO) {
-        String msg = userService.updateUser(principal, profileDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateProfile(@PathVariable("id") Long id, @RequestBody ProfileDTO profileDTO) {
+        String msg = userService.updateUser(id, profileDTO);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 }
