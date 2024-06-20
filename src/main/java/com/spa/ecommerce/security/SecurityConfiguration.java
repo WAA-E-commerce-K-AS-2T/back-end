@@ -84,6 +84,24 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.SHOPPINGCART_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("shoppingcart.delete")
 
+
+                        .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX )
+                        .hasAnyAuthority("order.read")
+                        .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
+                        .hasAnyAuthority("order.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
+                        .hasAnyAuthority("order.write")
+                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
+                        .hasAnyAuthority("order.write")
+                        .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*" )
+                        .hasAnyAuthority("order.delete")
+
+                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*/cancel" )
+                        .hasAnyAuthority("order.cancel")
+                        .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*/status" )
+                        .hasAnyAuthority("order.status")
+
+
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_USER_URL_PREFIX )
                         .hasAnyAuthority("users.read")
                         .requestMatchers(HttpMethod.POST, Constant.ADMIN_USER_URL_PREFIX )
@@ -94,6 +112,8 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("users.write")
                         .requestMatchers(HttpMethod.DELETE, Constant.ADMIN_USER_URL_PREFIX +"/*" )
                         .hasAnyAuthority("users.delete")
+
+
 
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_ROLE_URL_PREFIX )
                         .hasAnyAuthority("roles.read")
