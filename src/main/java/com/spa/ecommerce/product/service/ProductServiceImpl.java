@@ -246,6 +246,7 @@ public class ProductServiceImpl implements ProductService {
             return products.stream().map(productResponseDTOMapper::toDto).collect(Collectors.toList());
         } else {
             throw new ProductException("Invalid Seller");
+
         }
     }
 

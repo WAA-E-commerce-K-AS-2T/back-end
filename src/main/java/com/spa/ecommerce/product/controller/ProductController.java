@@ -4,7 +4,6 @@ import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductResponseDto;
 import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
-import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.service.ProductService;
 import com.spa.ecommerce.review.ReviewDTO;
 import com.spa.ecommerce.review.ReviewService;
@@ -89,7 +88,6 @@ public class ProductController {
     // edit review
     @PutMapping("/{productId}/reviews/{reviewId}")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long productId, @PathVariable Long reviewId, @RequestBody ReviewDTO reviewDTO) {
-
         Optional<ReviewDTO>  dto = reviewService.update(productId, reviewId, reviewDTO);
         return dto.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());

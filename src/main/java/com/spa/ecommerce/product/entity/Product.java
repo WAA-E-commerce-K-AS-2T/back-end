@@ -57,6 +57,7 @@ public class Product {
     private List<ProductPhoto> productPhotos = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
     @JsonManagedReference(value = "product-review")
     private List<Review> reviews = new ArrayList<>();
 
