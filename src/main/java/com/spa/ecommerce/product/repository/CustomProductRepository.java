@@ -22,7 +22,7 @@ public class CustomProductRepository {
 
     public Page<Product> searchProduct(ProductSearchRequest searchRequest, Pageable pageable) {
         Specification<Product> specs = Specification
-                .where(withStatus(ProductStatusEnum.APPROVED))
+                .where(withStatusAndInStock(ProductStatusEnum.APPROVED))
                 .and(categoryEqual(searchRequest.getCategories()))
                 .and(priceGreaterThanEqual(searchRequest.getMinPrice()))
                 .and(priceLessThanEqual(searchRequest.getMaxPrice()))
@@ -35,8 +35,11 @@ public class CustomProductRepository {
         return productRepository.findAll(specs, pageable);
     }
 
-    static Specification<Product> withStatus(ProductStatusEnum status) {
-        return (root, query, criteriaBuilder)-> criteriaBuilder.equal(root.get("status"), status);
+    static Specification<Product> withStatusAndInStock(ProductStatusEnum status) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                criteriaBuilder.greaterThan(root.get("inStock"), 0),
+                criteriaBuilder.equal(root.get("status"), status)
+        );
     }
 
     static Specification<Product> categoryEqual(List<Category> categories) {

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class ProductDTO {
     private long id;
-    private List<Long> categoryIds = new ArrayList<>();
+    private List<Long> categoryIds;
     private String name;
     private String description;
     private double price;
