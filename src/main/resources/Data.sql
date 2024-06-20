@@ -83,7 +83,7 @@ VALUES (13, 3),(14, 3),(15, 3),(16, 3),(17, 3),(18, 3),(19, 3)
 
 INSERT INTO roles_privileges (privilege_id, role_id)
 VALUES
-    (19, 4), (21, 4), (30, 4), (31, 4), (32, 4), (33, 4), (34, 4);
+    (19, 4), (21, 4), (27, 4), (28, 4), (29, 4), (30, 4), (31, 4), (32, 4), (33, 4), (34, 4);
 
 INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_modified_date, email, full_name, password) VALUES (true, null, '2024-06-18 15:20:56.203965', 1, null, '2024-06-18 15:20:56.203965', 'admin@example.com', 'admin', '$2a$10$NKfxB1euNxnPG7.0T2S0k.jTKSGu7uhMMoTaKn4zMMhJbxhReONAa');
 INSERT INTO user (enabled, created_by, created_date, id, last_modified_by, last_modified_date, email, full_name, password) VALUES (true, null, '2024-06-18 15:21:00.019446', 2, null, '2024-06-18 15:21:00.019446', 'buyer@example.com', 'buyer', '$2a$10$2bgbBoiM1oGeHnL0awJ4LedVEBw35Cym/x2M8exBz7W36qbL3L.fK');

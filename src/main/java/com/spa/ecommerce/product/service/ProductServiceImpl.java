@@ -64,11 +64,10 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
             BeanUtils.copyProperties(productDTO, product);
-            product.setStatus(ProductStatusEnum.APPROVED);
+            product.setStatus(ProductStatusEnum.IN_REVIEW);
             product.setTimesBought(0);
             product.setSeller(user);
             product.setCategories(productCategories);
-
             product.setPostedDate(LocalDate.now());
 
             for(MultipartFile photo: photos){
