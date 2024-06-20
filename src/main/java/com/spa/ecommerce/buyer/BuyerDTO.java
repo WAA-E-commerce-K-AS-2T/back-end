@@ -14,4 +14,12 @@ public class BuyerDTO extends UserDTO {
         super(id, email, username, fullName, isActive, roles);
         this.address = address;
     }
+
+    public AddressDTO getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressDTO address) {
+        this.address = address;
+    }
 }
