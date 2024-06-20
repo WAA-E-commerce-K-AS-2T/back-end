@@ -66,6 +66,10 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX+"/**")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX )
+                        .hasAnyAuthority("product.write")
+
                         .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("product.write")
                         .requestMatchers(HttpMethod.DELETE, Constant.PRODUCT_URL_PREFIX+ "/*" )
@@ -106,11 +110,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX + "/*" )
                         .hasAnyAuthority("order.read")
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/seller/orderItems" )
+                        .requestMatchers(HttpMethod.GET, "/api/v1/sellers/orderItems" )
                         .hasAnyAuthority("order.read")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/seller/orderItems/*" )
+                        .requestMatchers(HttpMethod.GET, "/api/v1/sellers/orderItems/*" )
+                        .hasAnyAuthority("order.read")
 
-                        .hasAnyAuthority("order.read")
                         .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
                         .hasAnyAuthority("order.write")
                         .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
