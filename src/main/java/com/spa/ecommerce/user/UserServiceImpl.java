@@ -1,8 +1,14 @@
 package com.spa.ecommerce.user;
 
+import com.spa.ecommerce.address.Address;
+import com.spa.ecommerce.address.AddressRepository;
+import com.spa.ecommerce.buyer.BuyerDTOMapper;
+import com.spa.ecommerce.buyer.BuyerRepository;
 import com.spa.ecommerce.order.orderitem.OrderItem;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTOMapper;
+import com.spa.ecommerce.profile.ProfileDTO;
+import com.spa.ecommerce.seller.SellerDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,14 +24,20 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDTOMapper userDTOMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private SellerDTOMapper sellerDTOMapper;
+    @Autowired
     private SellerRepository sellerRepository;
+    @Autowired
+    private BuyerRepository buyerRepository;
+    @Autowired
+    private BuyerDTOMapper buyerDTOMapper;
+    @Autowired
+    private AddressRepository addressRepository;
     @Autowired
     private OrderItemDTOMapper orderItemDTOMapper;
 

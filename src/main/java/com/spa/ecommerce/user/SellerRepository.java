@@ -14,4 +14,6 @@ public interface SellerRepository extends JpaRepository<Seller, Long> {
 
     @Query("SELECT oi FROM OrderItem oi JOIN oi.order o JOIN oi.product p WHERE p.seller.id = :sellerId")
     Optional<List<OrderItem>> findOrderItemsByUserId(@Param("sellerId") Long sellerId);
+
+    Optional<Seller> findByEmail(String name);
 }
