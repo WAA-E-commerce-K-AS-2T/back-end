@@ -13,11 +13,14 @@ public class ReviewDTOMapper implements Function<Review, ReviewDTO> {
 
     @Override
     public ReviewDTO apply(Review review) {
+
         return new ReviewDTO (
                 review.getId(),
                 review.getRating(),
                 review.getComment(),
-                review.getProduct().getId()
+                review.getProduct().getId(),
+                review.getCreatedDate(),
+                review.getCreatedBy().getFullName()
                 );
     }
 }
