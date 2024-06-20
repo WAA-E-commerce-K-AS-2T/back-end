@@ -1,20 +1,15 @@
 package com.spa.ecommerce.user;
 
-import com.spa.ecommerce.address.Address;
-import com.spa.ecommerce.address.AddressDTO;
-import com.spa.ecommerce.address.AddressRepository;
-import com.spa.ecommerce.buyer.BuyerDTOMapper;
-import com.spa.ecommerce.buyer.BuyerRepository;
-import com.spa.ecommerce.profile.ProfileDTO;
-import com.spa.ecommerce.seller.SellerDTOMapper;
-import com.spa.ecommerce.seller.SellerRepository;
-import jakarta.transaction.Transactional;
+import com.spa.ecommerce.order.orderitem.OrderItem;
+import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
+import com.spa.ecommerce.order.orderitem.dto.OrderItemDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,25 +20,14 @@ public class UserServiceImpl implements UserService {
     private UserDTOMapper userDTOMapper;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private BuyerDTOMapper buyerDTOMapper;
-
-    @Autowired
-    private BuyerRepository buyerRepository;
-
-    @Autowired
-    private SellerDTOMapper sellerDTOMapper;
-
+    private UserRepository userRepository;
     @Autowired
     private SellerRepository sellerRepository;
-
     @Autowired
-    private AddressRepository addressRepository;
+    private OrderItemDTOMapper orderItemDTOMapper;
 
     @Override
     public Collection<UserDTO> getAll() {
@@ -118,6 +102,24 @@ public class UserServiceImpl implements UserService {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<List<OrderItemDTO>> getOrderItemsForSeller(Principal principal) {
+        String email = principal.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            Long sellerId = user.get().getId();
+            Optional<List<OrderItem>> oi = sellerRepository.findOrderItemsByUserId(sellerId);
+            if (oi.isPresent()) {
+                List<OrderItem> orderItems = oi.get();
+                List<OrderItemDTO> dto = orderItems.stream().map(o -> orderItemDTOMapper.apply(o)).collect(Collectors.toList());
+                return Optional.of(dto);
+            }else{
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

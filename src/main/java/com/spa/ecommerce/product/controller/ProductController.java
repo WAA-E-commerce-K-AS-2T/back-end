@@ -2,6 +2,8 @@ package com.spa.ecommerce.product.controller;
 
 import com.spa.ecommerce.common.Constant;
 import com.spa.ecommerce.product.dto.ProductDTO;
+import com.spa.ecommerce.product.dto.ProductStatusUpdateDTO;
+import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.product.service.ProductService;
 import com.spa.ecommerce.review.ReviewDTO;
 import com.spa.ecommerce.review.ReviewService;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +26,21 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
 
+    @PostMapping
+    public ResponseEntity<ProductDTO> saveProduct(Principal principal, @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
+        Optional<ProductDTO> productDTO = productService.saveProduct(principal, product, photos);
+        return productDTO
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
+
+    }
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
+        Optional<ProductDTO> productDTO = productService.updateProduct(productId, product, photos);
+        return productDTO
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
+    }
 
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> getAllProducts(Pageable pageable) {
@@ -77,7 +96,34 @@ public class ProductController {
     }
 
     // edit review
+    @PutMapping("/{productId}/reviews/{reviewId}")
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long productId, @PathVariable Long reviewId, @RequestBody ReviewDTO reviewDTO) {
+        Optional<ProductDTO> product = productService.getProductById(productId);
+        Optional<ReviewDTO> updatedReview = Optional.empty();
+        if (product.isPresent()) {
+            reviewDTO.setProduct(product.get());
+            updatedReview = reviewService.update(reviewId, reviewDTO);
+        }
+
+        return updatedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
     //delete review
+    @DeleteMapping("/{productId}/reviews/{reviewId}")
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long productId, @PathVariable Long reviewId) {
+        Optional<ReviewDTO> deletedReview = reviewService.delete(reviewId);
+        return deletedReview.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+
+    //approve product
+    @PutMapping("/{productId}/set-status")
+    public  ResponseEntity<ProductDTO> setProductStatus(@PathVariable Long productId, @RequestBody ProductStatusUpdateDTO status){
+        Optional<ProductDTO> productDTO = productService.setProductStatus(productId, status);
+        return productDTO.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
 }

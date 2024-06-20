@@ -1,6 +1,5 @@
 package com.spa.ecommerce.user;
 
-import com.spa.ecommerce.address.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,18 @@
 package com.spa.ecommerce.user.controller;
 
 import com.spa.ecommerce.common.Constant;
+import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.service.ProductService;
+import com.spa.ecommerce.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -16,22 +20,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SellerController {
 
-    private final ProductService productService;
-
-    @PostMapping("/{sellerId}/products")
-    public ResponseEntity<ProductDTO> saveProduct(@PathVariable Long sellerId , @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
-        Optional<ProductDTO> productDTO = productService.saveProduct(sellerId, product, photos);
-        return productDTO
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
-
+    private final UserService userService;
+    @GetMapping("/orderItems")
+    public ResponseEntity<Optional<List<OrderItemDTO>>> getOrderItems(Principal principal) {
+        Optional<List<OrderItemDTO>> items =  userService.getOrderItemsForSeller(principal);
+        if(items.isPresent()) {
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+        }
     }
 
-    @PutMapping("/{sellerId}/products/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long sellerId , @PathVariable Long productId, @RequestPart(name = "product") ProductDTO product, @RequestPart(name = "photos") MultipartFile[] photos) {
-        Optional<ProductDTO> productDTO = productService.updateProduct(productId, product, photos);
-        return productDTO
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
-    }
+
+
 }
