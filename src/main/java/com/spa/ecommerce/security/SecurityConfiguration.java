@@ -49,8 +49,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/login", "/signup", "/logout", "/reset-password/**").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX )
-                        .hasAnyAuthority("product.read")
+                        .requestMatchers(HttpMethod.GET, Constant.CATEGORY_URL_PREFIX)
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX)
+                        .permitAll()
+
+//                        .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX )
+//                        .hasAnyAuthority("product.read")
                         .requestMatchers(HttpMethod.POST, Constant.PRODUCT_URL_PREFIX )
                         .hasAnyAuthority("product.write")
                         .requestMatchers(HttpMethod.PUT, Constant.PRODUCT_URL_PREFIX+ "/*" )
