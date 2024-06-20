@@ -152,13 +152,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateUser(Long id, ProfileDTO profileDTO) {
+    public String updateUser(Principal principal, ProfileDTO profileDTO) {
         //return Optional.of("test");
-        Optional<Seller> seller = sellerRepository.findById(id);
+        Optional<Seller> seller = sellerRepository.findByEmail(principal.getName());
         if (seller.isPresent()) {
             return "Your Account has been changed";
         } else {
-            Optional<Buyer> buyer = buyerRepository.findById(id);
+            Optional<Buyer> buyer = buyerRepository.findByEmail(principal.getName());
             if (buyer.isPresent()) {
                 Buyer saveObj = buyer.get();
                 saveObj.setFullName(profileDTO.getFullname());
