@@ -1,5 +1,6 @@
 package com.spa.ecommerce.product.dto;
 
+import com.spa.ecommerce.category.Category;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.productPhoto.dto.ProductPhotoDTO;
 import com.spa.ecommerce.productPhoto.dto.ProductPhotoDtoMapper;
@@ -26,6 +27,9 @@ public class ProductResponseDTOMapper {
         ProductResponseDto productResponseDto = new ProductResponseDto();
         BeanUtils.copyProperties(product, productResponseDto);
         productResponseDto.setProductStatus(product.getStatus().getStatus());
+        List<Category> cats = product.getCategories();
+        List<Long> catIds = cats.stream().map(Category::getId).collect(Collectors.toList());
+        productResponseDto.setCategoryIds(catIds);
         List<ProductPhotoDTO> productDtoPhotos = product.getProductPhotos().stream().map(productPhotoDtoMapper).collect(Collectors.toList());
         productResponseDto.setProductPhotos(productDtoPhotos);
         List<ReviewDTO> reviews = product.getReviews().stream().map(reviewDTOMapper).collect(Collectors.toList());

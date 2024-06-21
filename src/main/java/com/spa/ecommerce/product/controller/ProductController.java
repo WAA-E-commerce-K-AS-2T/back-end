@@ -108,5 +108,4 @@ public class ProductController {
         ProductResponseDto productDTO = productService.setProductStatus(productId, status);
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
-
 }

@@ -30,4 +30,6 @@ public interface ProductService {
     public ProductResponseDto setProductStatus(Long id, ProductStatusUpdateDTO status);
 
     public List<ProductResponseDto> getProductsBySellerId(Principal principal);
+
+    public Page<ProductResponseDto> getAllProductsForAdmin(Pageable pageable);
 }
