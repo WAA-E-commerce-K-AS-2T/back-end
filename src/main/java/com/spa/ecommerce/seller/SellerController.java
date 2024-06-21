@@ -1,6 +1,7 @@
 package com.spa.ecommerce.seller;
 
 import com.spa.ecommerce.common.Constant;
+import com.spa.ecommerce.order.dto.OrderDTO;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 import com.spa.ecommerce.product.dto.ProductDTO;
 import com.spa.ecommerce.product.dto.ProductResponseDto;
@@ -24,12 +25,22 @@ public class SellerController {
     private final UserService userService;
     private final ProductService productService;
 
-    @GetMapping("/orderItems")
-    public ResponseEntity<Optional<List<OrderItemDTO>>> getOrderItems(Principal principal) {
-        Optional<List<OrderItemDTO>> items =  userService.getOrderItemsForSeller(principal);
-        if(items.isPresent()) {
-            return new ResponseEntity<>(items, HttpStatus.OK);
-        }else{
+//    @GetMapping("/orderItems")
+//    public ResponseEntity<Optional<List<OrderItemDTO>>> getOrderItems(Principal principal) {
+//        Optional<List<OrderDTO>> items =  userService.getOrderItemsForSeller(principal);
+//        if(items.isPresent()) {
+//            return new ResponseEntity<>(items, HttpStatus.OK);
+//        }else{
+//            return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<Optional<List<OrderDTO>>> getOrders(Principal principal) {
+        Optional<List<OrderDTO>> orders = userService.getOrdersForSeller(principal);
+        if (orders.isPresent()) {
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
         }
     }

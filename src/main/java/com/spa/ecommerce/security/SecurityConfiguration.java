@@ -107,7 +107,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, Constant.SHOPPINGCART_URL_PREFIX+ "/*" )
                         .hasAnyAuthority("shoppingcart.delete")
 
-
                         //Order
                         .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX )
                         .hasAnyAuthority("order.read")
