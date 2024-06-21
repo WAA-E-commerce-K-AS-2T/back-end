@@ -1,5 +1,6 @@
 package com.spa.ecommerce.product.repository;
 
+import com.spa.ecommerce.common.ProductStatusEnum;
 import com.spa.ecommerce.product.entity.Product;
 import com.spa.ecommerce.review.Review;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Page<Product> findAll(Pageable pageable);
+
+    Page<Product> findAllByStatusAndInStockGreaterThan(ProductStatusEnum status, int inStock, Pageable pageable);
 
     @Query ("SELECT p.reviews FROM Product p where p.id = :id")
     public List<Review> getReviewsByProductID(Long id);

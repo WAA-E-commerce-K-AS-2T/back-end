@@ -101,6 +101,9 @@ INSERT INTO users_roles (id, role_id, user_id) VALUES (4, 3, 4);
 INSERT INTO product (id, name, description, price, brand, product_size, color, material, status, in_stock, posted_date, seller_id, times_bought)
 VALUES(1, 'Product 1', 'Description for Product 1', 19.99, 'Brand A', 'L', 'Red', 'Cotton', 'IN_REVIEW', 100, '2023-06-01', 3, 0);
 
+INSERT INTO product (id, name, description, price, brand, product_size, color, material, status, in_stock, posted_date, seller_id, times_bought)
+VALUES(2, 'Product 2', 'Description for Product 1', 100, 'Brand A', 'L', 'Red', 'Cotton', 'APPROVED', 5, '2023-06-01', 3, 0);
+
 
 INSERT INTO product_photo (id, name, image_url, image_id, product_id) VALUES (1, 'sketchers-women-black', 'http://res.cloudinary.com/dmyuqmm5o/image/upload/v1718846676/v17hahycwvenzrz0tfcf.png', 'v17hahycwvenzrz0tfcf', 1);
 
