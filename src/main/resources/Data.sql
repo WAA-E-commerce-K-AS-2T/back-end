@@ -106,7 +106,7 @@ VALUES(2, 'Product 2', 'Description for Product 1', 100, 'Brand A', 'L', 'Red', 
 
 
 INSERT INTO product_photo (id, name, image_url, image_id, product_id) VALUES (1, 'sketchers-women-black', 'http://res.cloudinary.com/dmyuqmm5o/image/upload/v1718846676/v17hahycwvenzrz0tfcf.png', 'v17hahycwvenzrz0tfcf', 1);
-
+INSERT INTO product_photo (id, name, image_url, image_id, product_id) VALUES (2, 'sketchers-women-black', 'http://res.cloudinary.com/dmyuqmm5o/image/upload/v1718846676/v17hahycwvenzrz0tfcf.png', 'v17hahycwvenzrz0tfcf', 2);
 INSERT INTO category (id, name, parent_id) VALUES (1, 'Electronics', null);
 INSERT INTO category (id, name, parent_id) VALUES (2, 'Clothing', null);
 INSERT INTO category (id, name, parent_id) VALUES (3, 'Books', null);
