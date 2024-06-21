@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productResponseDTOMapper::toDto);
+        return productRepository.findAllByStatusAndInStockGreaterThan(ProductStatusEnum.APPROVED,0,pageable).map(productResponseDTOMapper::toDto);
     }
 
     @Override
@@ -247,6 +247,11 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductException("Invalid Seller");
 
         }
+    }
+
+    @Override
+    public Page<ProductResponseDto> getAllProductsForAdmin(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productResponseDTOMapper::toDto);
     }
 
 }

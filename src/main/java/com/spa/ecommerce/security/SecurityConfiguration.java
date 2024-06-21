@@ -79,6 +79,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/products/*/set-status" )
                         .hasAnyAuthority("product.approval")
 
+                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/products" )
+                        .hasAnyAuthority("product.approval")
+
+
                         //Revoiews
                         .requestMatchers(HttpMethod.GET, Constant.PRODUCT_URL_PREFIX+ "/*/reviews" )
                         .permitAll()
