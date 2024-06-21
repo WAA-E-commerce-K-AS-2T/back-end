@@ -85,21 +85,23 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("shoppingcart.delete")
 
 
-                        .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX )
-                        .hasAnyAuthority("order.read")
-                        .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
-                        .hasAnyAuthority("order.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
-                        .hasAnyAuthority("order.write")
-                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
-                        .hasAnyAuthority("order.write")
-                        .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*" )
-                        .hasAnyAuthority("order.delete")
+//                        .requestMatchers(HttpMethod.GET, Constant.ORDER_URL_PREFIX )
+//                        .hasAnyAuthority("order.read")
+//                        .requestMatchers(HttpMethod.POST, Constant.ORDER_URL_PREFIX )
+//                        .hasAnyAuthority("order.write")
+//                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
+//                        .hasAnyAuthority("order.write")
+//                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*" )
+//                        .hasAnyAuthority("order.write")
+//                        .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*" )
+//                        .hasAnyAuthority("order.delete")
+//
+////                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*/cancel" )
+////                        .hasAnyAuthority("order.cancel")
+////                        .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*/status" )
+////                        .hasAnyAuthority("order.status")
 
-                        .requestMatchers(HttpMethod.PUT, Constant.ORDER_URL_PREFIX+ "/*/cancel" )
-                        .hasAnyAuthority("order.cancel")
-                        .requestMatchers(HttpMethod.DELETE, Constant.ORDER_URL_PREFIX+ "/*/status" )
-                        .hasAnyAuthority("order.status")
+
 
 
                         .requestMatchers(HttpMethod.GET, Constant.ADMIN_USER_URL_PREFIX )

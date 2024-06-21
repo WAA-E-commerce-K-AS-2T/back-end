@@ -1,6 +1,7 @@
 package com.spa.ecommerce.user;
 
 import com.spa.ecommerce.common.GeneralService;
+import com.spa.ecommerce.order.dto.OrderDTO;
 import com.spa.ecommerce.profile.ProfileDTO;
 import com.spa.ecommerce.order.orderitem.dto.OrderItemDTO;
 
@@ -17,7 +18,7 @@ public interface UserService extends GeneralService<UserDTO, Long> {
 
     String updateUser(Principal principal, ProfileDTO profileDTO);
 
-    Optional<List<OrderItemDTO>> getOrderItemsForSeller(Principal principal);
+    Optional<List<OrderDTO>> getOrdersForSeller(Principal principal);
 
     //Optional<String> resetPassword(Long id, ResetPasswordDTO resetPassword);
 }

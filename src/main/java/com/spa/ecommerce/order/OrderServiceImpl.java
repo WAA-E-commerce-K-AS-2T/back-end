@@ -1,6 +1,8 @@
 package com.spa.ecommerce.order;
 
 import com.spa.ecommerce.exception.order.CancelOrderException;
+import com.spa.ecommerce.exception.order.OrderNotFoundException;
+import com.spa.ecommerce.notificationService.EmailServiceImpl;
 import com.spa.ecommerce.order.dto.OrderDTO;
 import com.spa.ecommerce.order.dto.OrderDTOMapper;
 import com.spa.ecommerce.order.orderitem.OrderItem;
@@ -45,6 +47,8 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
     @Autowired
     SellerRepository sellerRepository;
+    @Autowired
+    private EmailServiceImpl emailService;
 
     @Transactional
     public OrderDTO placeOrder(Principal principal, OrderDTO orderDTO) {
@@ -75,15 +79,17 @@ public class OrderServiceImpl implements OrderService {
                     order.getOrderItems().add(orderItem);
                 }
 
-                order = orderRepository.save(order); // Save order with order items due to cascading
+                order = orderRepository.save(order);
 
-                // Ensure products are saved
+
                 productRepository.saveAll(cart.getCartItems().stream().map(CartItem::getProduct).toList());
 
                 cartItemRepository.deleteAll(cart.getCartItems());
                 cart.getCartItems().clear();
                 cart.setTotalPrice(0.0);
                 shoppingCartRepository.save(cart);
+
+                emailService.sendOrderConfirmationEmail(user, order);
 
                 return orderDTOMapper.apply(order);
             }
@@ -98,21 +104,6 @@ public class OrderServiceImpl implements OrderService {
                 .map(orderDTOMapper)
                 .orElse(null);
     }
-
-//    @Override
-//    public Optional<OrderDTO> update(long id) {
-//        Order existingOrder = orderRepository.findById(id).orElse(null);
-//        Status currentStatus = existingOrder.getStatus();
-//        if(currentStatus == Status.PENDING || currentStatus == Status.PROCESSING){
-//            existingOrder.setStatus(Status.CANCELLED);
-//            orderRepository.save(existingOrder);
-//            return Optional.of(orderDTOMapper.apply(existingOrder));
-//        }else {
-//            return Optional.empty();
-//        }
-//
-//
-//    }
 
     @Override
     public List<OrderDTO> findAll(Principal principal) {
@@ -149,8 +140,8 @@ public class OrderServiceImpl implements OrderService {
 
                     if (order.getStatus() == Status.PROCESSING || order.getStatus() == Status.PENDING) {
                         order.setStatus(Status.CANCELLED);
-//                        return orderRepository.save(order);
                         Order updatedOrder = orderRepository.save(order);
+                        emailService.sendOrderCancellationEmail (user, order);
                         return orderDTOMapper.apply(updatedOrder);
                     } else {
                         throw new CancelOrderException("Order cannot be cancelled", "ORDER_CANNOT_BE_CANCELLED");
@@ -166,18 +157,17 @@ public class OrderServiceImpl implements OrderService {
 
                     List<OrderItem> orderItems = optionalOrderItems.get();
 
-                    // Find and update the order item
+
                     OrderItem orderItem = orderItems.stream()
                             .filter(oi -> oi.getOrder().getId().equals(orderId))
                             .findFirst()
-                            .orElseThrow(() -> new RuntimeException("Order item not found"));
+                            .orElseThrow(() ->  new OrderNotFoundException("Order not found", "ORDER_NOT_FOUND"));
 
                     Order order = orderItem.getOrder();
                     if (order.getStatus() == Status.PROCESSING || order.getStatus() == Status.PENDING) {
                         order.setStatus(Status.CANCELLED);
-//                        orderRepository.save(order);
-//                        return order;
                         Order updatedOrder = orderRepository.save(order);
+                        emailService.sendOrderCancellationEmail (user, order);
                         return orderDTOMapper.apply(updatedOrder);
                     } else {
                         throw new CancelOrderException("Order cannot be cancelled", "ORDER_CANNOT_BE_CANCELLED");
@@ -208,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
                                 .map(OrderItem::getOrder)
                                 .filter(o -> o.getId().equals(orderId))
                                 .findFirst()
-                                .orElseThrow(() -> new RuntimeException("Order not found"));
+                                .orElseThrow(() ->  new OrderNotFoundException("Order not found", "ORDER_NOT_FOUND"));
 
                         if (order.getStatus() == Status.PENDING) {
                             order.setStatus(Status.PROCESSING);
@@ -220,11 +210,14 @@ public class OrderServiceImpl implements OrderService {
                             throw new RuntimeException("Order status cannot be updated");
                         }
 
-//                        return orderRepository.save(order);
                         Order updatedOrder = orderRepository.save(order);
+
+
+                        emailService.sendOrderStatusUpdateEmail(user, order);
+
                         return orderDTOMapper.apply(updatedOrder);
                     } else {
-                        throw new RuntimeException("No order items found for the user");
+                        throw  new OrderNotFoundException("Order not found", "ORDER_NOT_FOUND");
                     }
                 } else {
                     throw new RuntimeException("User not found");
